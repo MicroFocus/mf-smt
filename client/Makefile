@@ -1,5 +1,5 @@
-NAME          = smt-client
-VERSION       = 1.0.2
+NAME          = mf-smt-client
+VERSION       = 1.0.3
 DESTDIR       = /
 PERL         ?= perl
 PERLMODDIR    = $(shell $(PERL) -MConfig -e 'print $$Config{installvendorlib};')
@@ -37,7 +37,7 @@ install:
 	install -m 755 script/inventory $(DESTDIR)/usr/lib/SMT/bin/job
 	install -m 755 script/report $(DESTDIR)/usr/lib/SMT/bin/job
 	install -m 755 script/servererror $(DESTDIR)/usr/lib/SMT/bin/job
-	install -m 644 logrotate/smt-client $(DESTDIR)/etc/logrotate.d/
+	install -m 644 logrotate/mf-smt-client $(DESTDIR)/etc/logrotate.d/
 
 	install -m 644 README $(DESTDIR)$(DOCDIR)/$(NAME)/
 	install -m 644 COPYING $(DESTDIR)$(DOCDIR)/$(NAME)/
@@ -66,7 +66,7 @@ dist: clean
 	@cp README $(NAME)-$(VERSION)/
 	@cp COPYING $(NAME)-$(VERSION)/
 	@cp script/* $(NAME)-$(VERSION)/script/
-	@cp logrotate/smt-client $(NAME)-$(VERSION)/logrotate/
+	@cp logrotate/mf-smt-client $(NAME)-$(VERSION)/logrotate/
 	find perl-lib -name ".svn" -prune -o \
                 \( \
                   \( -type d -exec install -m755 -d $(NAME)-$(VERSION)/\{\} \; \) \

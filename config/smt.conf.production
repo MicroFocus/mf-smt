@@ -1,11 +1,13 @@
 [NU]
-NUUrl=https://updates.suse.com/
-NURegUrl=https://scc.suse.com/connect
-NUUser=
-NUPass=
+NUUrl=https://nu.novell.com/
+NURegUrl=https://secure-www.novell.com/center/regsvc/
+# use these for testing
+NUUser=MIRRORUSER
+NUPass=MIRRIRPASSWORD
 
 [DB]
 config=dbi:mysql:database=smt;host=localhost
+#config=dbi:SQLite:dbname=/var/lib/SMT/db/smt.db
 user=smt
 pass=
 
@@ -25,7 +27,6 @@ mirror_preunlock_hook=
 mirror_postunlock_hook=
 
 # specify proxy settings here, if you do not want to use the global proxy settings
-# If you leave these options empty the global options are used.
 # 
 # specify which proxy you want to use for HTTP connection
 # in the form http://proxy.example.com:3128
@@ -47,7 +48,7 @@ ProxyUser=
 requiredAuthType=none
 
 #
-# the smt commands should run with this unix user
+# the smt commands should run with this unix user 
 #
 smtUser=smt
 
@@ -75,6 +76,12 @@ signingKeyID=
 #mirrorUser=
 #mirrorPassword=
 
+#
+# This string is used to load a cloud specific verification module to verify
+# the guest issuing the registration request is eligable to access the
+# repositories. The value none indiactes that no verification should
+# take place
+cloudGuestVerify = none
 
 [REST]
 # Enable administrative access to the SMT RESTService by setting enableRESTAdminAccess=1
@@ -134,4 +141,5 @@ mirror_archs=i386,ia64,ppc,s390,s390x,x86_64
 mirror_version=9
 mirror=false
 credentials=
+
 

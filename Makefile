@@ -1,5 +1,5 @@
-NAME          = smt
-VERSION       = 3.0.0
+NAME          = mf-smt
+VERSION       = 3.0.1
 DESTDIR       = /
 PERL         ?= perl
 PERLMODDIR    = $(shell $(PERL) -MConfig -e 'print $$Config{installvendorlib};')
@@ -56,6 +56,7 @@ install:
 	install -m 644 www/perl-lib/SMT/Registration.pm $(DESTDIR)/srv/www/perl-lib/SMT/
 	install -m 644 www/perl-lib/SMT/Support.pm $(DESTDIR)/srv/www/perl-lib/SMT/
 	install -m 644 www/perl-lib/SMT/Utils.pm $(DESTDIR)$(PERLMODDIR)/SMT/
+	install -m 644 www/perl-lib/SMT/NCCRegTools.pm $(DESTDIR)$(PERLMODDIR)/SMT/
 	install -m 644 www/perl-lib/SMT/Mirror/*.pm /$(DESTDIR)$(PERLMODDIR)/SMT/Mirror/
 	install -m 644 www/perl-lib/SMT/Parser/*.pm /$(DESTDIR)$(PERLMODDIR)/SMT/Parser/
 	install -m 644 www/perl-lib/SMT/Client/*.pm /$(DESTDIR)/srv/www/perl-lib/SMT/Client/
@@ -84,6 +85,9 @@ install:
                   -o \
                   \( -type f -exec install -m644 \{\} $(DESTDIR)/usr/share/schemas/smt/\{\} \; \)
 	install -m 755 config/smt.target $(DESTDIR)/usr/lib/systemd/system/
+	install -m 444 config/smt.service $(DESTDIR)/usr/lib/systemd/system/
+	install -m 444 config/smt-schema-upgrade.service $(DESTDIR)/usr/lib/systemd/system/
+	install -m 755 config/smt-maintenance $(DESTDIR)/usr/lib/SMT/bin/
 	install -m 755 config/smt.reg $(DESTDIR)/etc/slp.reg.d/
 	install -m 755 db/smt-db $(DESTDIR)/usr/lib/SMT/bin/
 	install -m 755 db/smt-sql $(DESTDIR)/usr/bin/
@@ -160,6 +164,8 @@ dist: clean
 	@cp apache2/vhosts.d/*.conf $(NAME)-$(VERSION)/apache2/vhosts.d/
 	@cp config/smt.conf.production $(NAME)-$(VERSION)/config/smt.conf
 	@cp config/smt.target $(NAME)-$(VERSION)/config/
+	@cp config/*.service $(NAME)-$(VERSION)/config/
+	@cp config/smt-maintenance $(NAME)-$(VERSION)/config/
 	@cp config/smt.reg $(NAME)-$(VERSION)/config/
 	@cp cron/smt-* $(NAME)-$(VERSION)/cron/
 	@cp cron/novell.com-smt $(NAME)-$(VERSION)/cron/

@@ -15,13 +15,13 @@ module Yast
         "credentials" =>
           # TRANSLATORS: help a1
           _(
-            "<p><big><b>Customer Center Access</b></big><br>\nEnter the credentials for SUSE Updates (updates.suse.com) here.</p>\n"
+            "<p><big><b>Customer Center Access</b></big><br>\nEnter the credentials for Micro Focus Updates (nu.novell.com) here.</p>\n"
           ) +
             # TRANSLATORS: help a2
             _(
               "<p>It is important to select properly the protocol to communicate with the Customer Center,\n" +
-                "since the SUSE Customer Center uses different communication protocol than the\n" +
-                "SUSE Customer Center. We recommend to use SUSE Customer Center where possible.</p>\n"
+                "since the Micro Focus Customer Center uses different communication protocol than the\n" +
+                "Micro Focus Customer Center. We recommend to use Micro Focus Customer Center where possible.</p>\n"
             ) +
             # TRANSLATORS: help a3
             _(

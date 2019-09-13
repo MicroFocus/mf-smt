@@ -37,6 +37,8 @@ use English;
 our @ISA = qw(Exporter);
 our @EXPORT = qw(__ __N printLog LOG_ERROR LOG_WARN LOG_INFO1 LOG_INFO2 LOG_DEBUG LOG_DEBUG2 LOG_DEBUG3);
 
+my $REGSHARING = undef;
+
 use constant IOBUFSIZE => 8192;
 use constant LOG_ERROR  => 0x0001;
 use constant LOG_WARN   => 0x0002;
@@ -126,6 +128,46 @@ sub db_connect
 
     return $dbh;
 }
+
+=item hasRegSharing()
+
+Check whether registration sharing is enabled or not.
+
+=cut
+
+sub hasRegSharing
+{
+    my $r = shift;
+
+    if (! defined $REGSHARING) {
+        $REGSHARING = 0;
+        my $cfg;
+        eval
+        {
+            $cfg = SMT::Utils::getSMTConfig();
+        };
+        if($@ || !defined $cfg)
+        {
+            if ($r)
+            {
+                $r->log_error("Cannot read the SMT configuration file: ".$@);
+                my $msg = 'SMT server is missconfigured. Please contact your '
+                  . 'administrator.';
+                http_fail($r, 500, $msg);
+            }
+            return;
+        }
+        my $allowedSenders = $cfg->val('LOCAL', 'acceptRegistrationSharing');
+        my $shareRegDataTargets = $cfg->val('LOCAL', 'shareRegistrations');
+
+        if ($allowedSenders && $shareRegDataTargets) {
+            $REGSHARING = 1;
+        }
+    }
+
+    return $REGSHARING;
+}
+
 
 =item __()
 
@@ -387,31 +429,50 @@ die and request a registration call.
 sub getSMTGuid
 {
     my $guid   = "";
-    my $secret = "";
-    my $CREDENTIAL_DIR = "/etc/zypp/credentials.d";
-    my $CREDENTIAL_FILE = "SCCcredentials";
-    my $fullpath = $CREDENTIAL_DIR."/".$CREDENTIAL_FILE;
 
-    if(!-d "$CREDENTIAL_DIR" || ! -e "$fullpath")
-    {
-        die "Credential file does not exist. You need to register the SMT server first.";
-    }
+    local $@;
+    eval {
+        my $secret = "";
+        my $CREDENTIAL_DIR = "/etc/zypp/credentials.d";
+        my $CREDENTIAL_FILE = "NCCcredentials";
+        my $GUID_FILE = "/etc/zmd/deviceid";
+        my $SECRET_FILE = "/etc/zmd/secret";
+        my $fullpath = $CREDENTIAL_DIR."/".$CREDENTIAL_FILE;
 
-    #
-    # read credentials from SCCcredentials file
-    #
-    open(CRED, "< $fullpath") or do {
-        die("Cannot open file $fullpath for read: $!\n");
-    };
-    while(<CRED>)
-    {
-        if($_ =~ /username\s*=\s*(.*)$/ && defined $1 && $1 ne "")
+        if(!-d "$CREDENTIAL_DIR" || ! -e "$fullpath")
         {
-            $guid = $1;
-	    last;
+            die "Credential file does not exist. You need to register the SMT server first.";
         }
+
+        #
+        # read credentials from NCCcredentials file
+        #
+        open(CRED, "< $fullpath") or do {
+            die("Cannot open file $fullpath for read: $!\n");
+        };
+        while(<CRED>)
+        {
+            if($_ =~ /username\s*=\s*(.*)$/ && defined $1 && $1 ne "")
+            {
+                $guid = $1;
+            last;
+            }
+        }
+        close CRED;
+    };
+
+    if ($@) {
+        my $cache_file = '/var/cache/smt/scc_guid';
+        if ( -f $cache_file ) {
+            if ( open( my $fh, '<', $cache_file ) ) {
+                $guid = <$fh>;
+                chomp($guid);
+                close($fh);
+            }
+        }
+        die $@ unless ($guid);
     }
-    close CRED;
+
     return $guid;
 }
 
@@ -428,6 +489,11 @@ sub getDBTimestamp
 {
     my $time = shift || time;
 
+    # max time representable by 32bit mysql TIMESTAMP type
+    # once fate#319450 is done this check should be removed
+    if ($time > 2147483647) {
+	$time = 2147483647;
+    }
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime($time);
     $year += 1900;
     $mon +=1;
@@ -878,6 +944,7 @@ sub getProxySettings
     {
         if(exists $ENV{https_proxy} && defined $ENV{https_proxy} && $ENV{https_proxy} =~ /^http/)
         {
+            # required for Crypt::SSLeay HTTPS Proxy support
             $httpsProxy = $ENV{https_proxy};
         }
     }
@@ -964,11 +1031,16 @@ sub createUserAgent
 {
     my %opts = @_;
 
+    my $cfg = getSMTConfig;
+    if (! exists $opts{connecttimeout})
+    {
+        $opts{connecttimeout} = int($cfg->val('LOCAL', 'ConnectTimeout', 5));
+    }
+
     require SMT::Curl;
 
     my $ua = SMT::Curl->new(%opts);
 
-    my $cfg = getSMTConfig;
     my $userAgentString  = $cfg->val('LOCAL', 'UserAgent', WWW::Curl::Easy->version());
     $ua->agent($userAgentString) if( $userAgentString ne "");
 
@@ -1056,7 +1128,6 @@ sub doesFileExist
     my $tries = 0;
     my $ret = 0;
     my $response;
-    $userAgent->connecttimeout(1);
 
     do
     {
@@ -1413,6 +1484,55 @@ sub lookupProductIdByDataId
     return $ref->{ID};
 }
 
+=item lookupProductById($dbh, $id)
+
+Lookup the product using the internal product ID.
+
+It returns a hash reference with product info
+
+=cut
+
+sub lookupProductById
+{
+    my $dbh = shift || return undef;
+    my $id = shift || return undef;
+    my $log = shift;
+    my $vblevel = shift;
+
+    my $query_product = sprintf("
+        SELECT p.id,
+               p.productdataid,
+               p.PRODUCTLOWER identifier,
+               p.versionlower version,
+               p.rellower release_type,
+               p.archlower arch,
+               p.friendly friendly_name,
+               p.product_type,
+               p.product_class,
+               p.cpe,
+               p.description,
+               p.shortname,
+               p.release_stage,
+               1 free,
+               (CASE WHEN (SELECT c.DOMIRROR
+                             FROM ProductCatalogs pc
+                             JOIN Catalogs c ON pc.CATALOGID = c.ID
+                            WHERE pc.PRODUCTID = p.ID
+                              AND c.DOMIRROR = 'N'
+                              AND pc.OPTIONAL = 'N'
+                         GROUP BY c.DOMIRROR) = 'N'
+                THEN 0 ELSE 1 END ) available
+        FROM Products p WHERE id = %s",
+        $dbh->quote($id));
+
+    printLog($log, $vblevel, LOG_DEBUG, "STATEMENT: $query_product");
+    my $ref = $dbh->selectrow_hashref($query_product) || {};
+    $ref->{free} = (exists $ref->{free}?1:0);
+    $ref->{available} = ((exists $ref->{available} && $ref->{available} eq "1")?1:0);
+    return $ref;
+
+}
+
 =item lookupProductIdByName($dbh, $name[, $version][, $release][, $arch])
 
 Lookup the product ID using name, version arch and release.
@@ -1746,6 +1866,29 @@ sub lookupTargetByOS
     return $ref->{TARGET};
 }
 
+=item lookupMigrationTargetsById($dbh, $pdid[, $log, $vblevel])
+
+return an array reference with all product ids which are
+possible migration targets of the given product id
+
+=cut
+
+sub lookupMigrationTargetsById
+{
+    my $dbh = shift || return undef;
+    my $pdid = shift || return undef;
+    my $log = shift;
+    my $vblevel = shift;
+
+    my $query = sprintf("SELECT tgtpdid FROM ProductMigrations WHERE srcpdid = %s
+                         ORDER BY tgtpdid DESC",
+                        $dbh->quote($pdid));
+
+    printLog($log, $vblevel, LOG_DEBUG, "STATEMENT: $query");
+    my $ref = $dbh->selectcol_arrayref($query) || [];
+    return $ref;
+}
+
 =item isRES($dbh, $guid[, $log, vblevel])
 
 Return true if the client has RES installed, otherwise false
@@ -1762,7 +1905,7 @@ sub isRES
     my $sql = sprintf("
         select r.GUID
           from Registration r
-          join Products p on r.PRODUCTID = p.PRODUCTDATAID
+          join Products p on r.PRODUCTID = p.ID
          where r.GUID = %s
            AND p.PRODUCT = 'RES'",
            $dbh->quote($guid));
@@ -1771,6 +1914,163 @@ sub isRES
     my $ref = $dbh->selectrow_hashref($sql);
     return ($ref->{GUID}?1:0);
 }
+
+=item isExtensionOf($dbh, $baseid, $extensionid)
+
+returns true if extensionid is an extension of baseid, otherwise false
+
+=cut
+
+sub isExtensionOf
+{
+    my $dbh = shift || return 0;
+    my $baseid = shift || return 0;
+    my $extid = shift || return 0;
+    my $log = shift;
+    my $vblevel = shift;
+
+    my $sql = sprintf("
+        select 1
+          from ProductExtensions
+         where PRODUCTID = %s
+           and EXTENSIONID = %s",
+           $dbh->quote($baseid),
+           $dbh->quote($extid));
+
+    printLog($log, $vblevel, LOG_DEBUG, "STATEMENT: $sql");
+    my $ref = $dbh->selectcol_arrayref($sql) || [];
+    return (@$ref == 1);
+}
+
+=item isBaseProduct($dbh, $productid)
+
+returns true if productid is the base, otherwise false
+
+=cut
+
+sub isBaseProduct
+{
+    my $dbh = shift || return 0;
+    my $productid = shift || return 0;
+    my $log = shift;
+    my $vblevel = shift;
+
+    my $sql = sprintf("
+        select 1
+          from ProductExtensions
+         where EXTENSIONID = %s",
+           $dbh->quote($productid));
+
+    printLog($log, $vblevel, LOG_DEBUG, "STATEMENT: $sql");
+    my $ref = $dbh->selectcol_arrayref($sql) || [];
+    return (@$ref == 0);
+}
+
+
+=item isMigrationTargetOf($dbh, $srcid, $tgtid)
+
+returns true if tgtid is a valid migration target of srcid, otherwise false
+
+=cut
+
+sub isMigrationTargetOf
+{
+    my $dbh = shift || return 0;
+    my $srcid = shift || return 0;
+    my $tgtid = shift || return 0;
+    my $log = shift;
+    my $vblevel = shift;
+
+    my $sql = sprintf("
+        SELECT 1
+         FROM ProductMigrations
+         WHERE srcpdid = %s
+           AND tgtpdid = %s",
+           $dbh->quote($srcid),
+           $dbh->quote($tgtid));
+
+    printLog($log, $vblevel, LOG_DEBUG, "STATEMENT: $sql");
+    my $ref = $dbh->selectcol_arrayref($sql) || [];
+    return (@$ref == 1);
+}
+
+=item hasClientProductRegistered($dbh, $guid, $pdid[, $log, vblevel])
+
+Return true if the client has the product registered, otherwise false
+
+=cut
+
+sub hasClientProductRegistered
+{
+    my $dbh = shift || return 0;
+    my $guid = shift || return 0;
+    my $pdid = shift || return 0;
+    my $log = shift;
+    my $vblevel = shift;
+
+    my $sql = sprintf("
+        select r.GUID
+          from Registration r
+         where r.GUID = %s
+           AND r.PRODUCTID = %s",
+           $dbh->quote($guid),
+           $dbh->quote($pdid));
+
+    printLog($log, $vblevel, LOG_DEBUG, "STATEMENT: $sql");
+    my $ref = $dbh->selectrow_hashref($sql);
+    return ($ref->{GUID}?1:0);
+}
+
+=item sortProductsByExtensions($dbh, $input, $sorted)
+
+Sort product ids by "extensions of".
+
+Return array reference of products could not added to sorted
+because a base product is not part of the list.
+
+=cut
+
+sub sortProductsByExtensions
+{
+    my $dbh = shift || return [];
+    my $input = shift || return [];
+    my $sorted = shift || return [];
+    my $log = shift;
+    my $vblevel = shift;
+    my $notFound = [];
+
+    printLog($log, $vblevel, LOG_DEBUG, ">>>SORTING: ".join(', ', @$input));
+    foreach my $pdid (@$input)
+    {
+        if (@$sorted == 0)
+        {
+            push @$sorted, $pdid;
+            next;
+        }
+        my $found = 0;
+        foreach my $spdid (@$sorted)
+        {
+            if (isExtensionOf($dbh, $spdid, $pdid, $log, $vblevel))
+            {
+                push @$sorted, $pdid;
+                $found = 1;
+                next;
+            }
+        }
+        if (! $found)
+        {
+            push @$notFound, $pdid;
+        }
+    }
+    printLog($log, $vblevel, LOG_DEBUG, ">>> notFound: ".join(', ', @$notFound));
+    printLog($log, $vblevel, LOG_DEBUG, ">>> size notFound ".@$notFound." size input: ".@$input);
+    if (@$notFound > 0 && @$notFound < @$input)
+    {
+        return sortProductsByExtensions($dbh, $notFound, $sorted, $log, $vblevel);
+    }
+    return $notFound;
+}
+
 
 =item requestedAPIVersion($r)
 
@@ -1808,6 +2108,70 @@ sub requestedAPIVersion
         }
     }
     return $latestVersion;
+}
+
+sub array_compare
+{
+    my $array1 = shift || return 0;
+    my $array2 = shift || return 0;
+
+    # check the length of the arrays
+    return 0 if (@{$array1} != @{$array2});
+
+    my $str1 = join(',', sort(@$array1));
+    my $str2 = join(',', sort(@$array2));
+
+    return ($str1 eq $str2);
+}
+
+=item getRequiredProductReposById($dbh, $id)
+
+Get the list of repositories required to fully mirror a product.
+Returns a hashref of hashrefs with required repos info.
+
+=cut
+
+sub getRequiredProductReposById
+{
+    my $dbh = shift || return undef;
+    my $id = shift || return undef;
+    my $log = shift;
+    my $vblevel = shift;
+
+    my $query_repos = sprintf("
+        SELECT c.id, c.NAME AS catalog_name, p.product, p.version, p.arch
+             FROM ProductCatalogs pc
+             JOIN Catalogs c ON pc.CATALOGID = c.ID
+             JOIN Products p ON ( pc.PRODUCTID = p.ID )
+            WHERE pc.PRODUCTID = %s
+              AND c.DOMIRROR = 'N'
+              AND pc.OPTIONAL = 'N'
+        ",
+        $dbh->quote($id)
+    );
+
+    printLog($log, $vblevel, LOG_DEBUG, "STATEMENT: $query_repos");
+    my $ref = $dbh->selectall_hashref($query_repos, 'id') || {};
+    return $ref;
+
+}
+
+sub getExtensionActivationsForProduct {
+    my $dbh = shift || return undef;
+    my $client_guid = shift;
+    my $product_id = shift;
+
+    my $sql = sprintf(
+        "select r2.PRODUCTID
+        from Registration as r join ProductExtensions as pe using (PRODUCTID)
+        join Registration as r2 on (pe.EXTENSIONID = r2.PRODUCTID AND r.GUID = r2.GUID)
+        where r.GUID = %s and r.PRODUCTID = %s",
+        $dbh->quote($client_guid),
+        $dbh->quote($product_id)
+    );
+
+    my $ref = $dbh->selectall_arrayref($sql, { Slice => {} }) || [];
+    return $ref;
 }
 
 =back

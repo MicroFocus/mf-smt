@@ -40,7 +40,7 @@ module Yast
       @path_to_scc_sync_script = "/usr/sbin/smt-scc-sync"
       @user_for_sync_script = "root"
 
-      @server_cert = "/etc/ssl/certs/YaST-CA.pem"
+      @server_cert = "/etc/pki/trust/anchors/YaST-CA.pem"
       @apache_cert = "/srv/www/htdocs/smt.crt"
 
       # own control file
@@ -61,7 +61,7 @@ module Yast
 
       @smt_database = "mysql"
 
-      @SCCcredentials_file = "/etc/zypp/credentials.d/SCCcredentials"
+      @SCCcredentials_file = "/etc/zypp/credentials.d/NCCcredentials"
       @NCCcredentials_file = "/etc/zypp/credentials.d/NCCcredentials"
 
       @read_api_type = "NCC"
@@ -88,7 +88,7 @@ module Yast
     end
 
     def SystemIsRegistered
-      FileUtils.Exists(@SCCcredentials_file) || FileUtils.Exists(@NCCCredentials_file)
+      FileUtils.Exists(@NCCCredentials_file)
     end
 
     def InitialConfig
@@ -279,7 +279,7 @@ module Yast
 
       state = CredentialsFileAccessible()
       Builtins.y2milestone(
-        "Initial state: SCCcredentials are readable by SMT user: %1",
+        "Initial state: NCCcredentials are readable by SMT user: %1",
         state
       )
 
@@ -293,7 +293,7 @@ module Yast
 
       state = CredentialsFileAccessible()
       Builtins.y2milestone(
-        "Final state: SCCcredentials are readable by SMT user: %1",
+        "Final state: NCCcredentials are readable by SMT user: %1",
         state
       )
 

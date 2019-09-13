@@ -1,3 +1,13 @@
-# Makefile.am for smt/doc/autodocs
+#Mkefile.am for common/doc/autodocs
 
-include $(top_srcdir)/autodocs-ycp.ami
+htmldir = $(docdir)/autodocs
+
+index.html:
+	cd ../../ && yardoc && cd -
+
+html_DATA = $(wildcard *.html)
+
+CLEANFILES = $(html_DATA)
+
+EXTRA_DIST = ../../.yardopts
+
