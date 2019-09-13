@@ -18,8 +18,8 @@
 # norootforbuild
 
 
-Name:           smt-client
-Version:        1.0.2
+Name:           mf-smt-client
+Version:        1.0.3
 Release:        0.1
 Requires:       perl = %{perl_version}
 Requires:       perl-XML-XPath
@@ -33,17 +33,18 @@ Requires:       logrotate
 Requires:       cron
 Requires:       zypper >= 1.3.14
 Requires:       libzypp >= 6.36.0
-Conflicts:      smt <= 1.1.21
+Conflicts:      mf-smt <= 1.1.21
 PreReq:         %fillup_prereq
 AutoReqProv:    on
 Group:          Productivity/Networking/Web/Proxy
 License:        GPL-2.0+
-Summary:        Subscription Management Tool
+Summary:        Micro Focus Subscription Management Tool
 Source:         %{name}-%{version}.tar.bz2
-Source1:        sysconfig.smt-client
-Source2:        smt-client-rpmlintrc
+Source1:        sysconfig.mf-smt-client
+Source2:        mf-smt-client-rpmlintrc
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 URL:            https://github.com/SUSE/smt
+Obsoletes:	smt-client <= 1.0.2
 
 %description
 This package provide everything you need to get a local NU and
@@ -73,7 +74,7 @@ make
 make DESTDIR=$RPM_BUILD_ROOT DOCDIR=%{_docdir} install
 
 mkdir -p $RPM_BUILD_ROOT/var/adm/fillup-templates/
-install -m 644 sysconfig.smt-client  $RPM_BUILD_ROOT/var/adm/fillup-templates/
+install -m 644 sysconfig.mf-smt-client  $RPM_BUILD_ROOT/var/adm/fillup-templates/
 
 # touching the ghost
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/cron.d/
@@ -103,11 +104,11 @@ exit 0
 %dir /usr/lib/SMT/bin/job
 /usr/lib/SMT/bin/job/*
 /usr/lib/SMT/bin/processjob
-/var/adm/fillup-templates/sysconfig.smt-client
+/var/adm/fillup-templates/sysconfig.mf-smt-client
 %ghost %{_sysconfdir}/cron.d/novell.com-smt-client
-%config /etc/logrotate.d/smt-client
-%ghost %dir /run/smtclient
-%dir %{_docdir}/smt-client
-%{_docdir}/smt-client/*
+%config /etc/logrotate.d/mf-smt-client
+%ghost %dir /run/mf-smtclient
+%dir %{_docdir}/mf-smt-client
+%{_docdir}/mf-smt-client/*
 
 %changelog
