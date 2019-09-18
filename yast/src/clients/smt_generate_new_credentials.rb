@@ -13,7 +13,7 @@ module Yast
       Yast.import "YSR"
       Yast.import "SMTData"
 
-      if !SMTData.SystemIsRegistered
+      if SMTData.SystemIsRegistered
         Builtins.y2warning("NCCcredentials file exists, not creating a new one")
         return :next
       end

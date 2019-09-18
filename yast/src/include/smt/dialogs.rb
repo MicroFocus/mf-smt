@@ -690,16 +690,11 @@ module Yast
     def CheckConfigDialog
       # defualt dialog return
       dialog_ret = :next
-      check_ret = WFM.CallFunction("smt_generate_new_credentials")
-      if check_ret == nil
-      # Error pop-up, %1 is replaced with a script name
-        Report.Error(
-          Builtins.sformat(
-            _("Unable to generate new NCCcredentials,\nAn error occurred while calling %1              "),
-              "smt_generate_new_credentials"
-             )
-           )
-#        return dialog_ret
+
+      ccode = Convert.to_integer(SCR.Execute(path(".target.bash"), "/usr/bin/touch /etc/zypp/credentials.d/NCCcredentials"))
+
+      if ccode != 0
+	Builtins.y2milestone("Not able to create /etc/zypp/credentials.d/NCCcredentials file")
       end
 
       if SMTData.GetSMTServiceStatus != true
