@@ -77,12 +77,12 @@ function check_copy_cert {
     return 0
 }
 
-function cache_scc_guid {
-    scc_guid=$(cat /etc/zypp/credentials.d/NCCcredentials | sed -n 's/username=\(.*\)/\1/p')
+function cache_ncc_guid {
+    ncc_guid=$(cat /etc/zypp/credentials.d/NCCcredentials | sed -n 's/username=\(.*\)/\1/p')
     mkdir -p /var/cache/smt
-    echo $scc_guid > /var/cache/smt/scc_guid
-    chown smt:www /var/cache/smt/scc_guid
-    chmod 640 /var/cache/smt/scc_guid
+    echo $ncc_guid > /var/cache/smt/ncc_guid
+    chown smt:www /var/cache/smt/ncc_guid
+    chmod 640 /var/cache/smt/ncc_guid
 }
 
 if ! test_cred_permissions; then
@@ -93,7 +93,7 @@ if ! check_copy_cert; then
     exit_code=1
 fi
 
-cache_scc_guid
+cache_ncc_guid
 
 # Inform the caller not only verbosely and set an exit status.
 exit ${exit_code}

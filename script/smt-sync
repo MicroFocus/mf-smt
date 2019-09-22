@@ -13,7 +13,7 @@ use POSIX ();     # Needed for setlocale()
 
 POSIX::setlocale(&POSIX::LC_MESSAGES, "");
 
-my $exec = "/usr/sbin/smt-scc-sync";
+my $exec = "/usr/sbin/smt-ncc-sync";
 my $cfg = undef;
 eval
 {

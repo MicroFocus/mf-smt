@@ -454,7 +454,7 @@ sub createSQLStatement($)
 {
     my $self   = shift || return undef;
     my $filter = shift || return undef;
-    return undef unless isa($filter, 'HASH');
+#    return undef unless isa($filter, 'HASH');
 
     my @PROPS = ();
     my @createDBprops = ('id', 'parent_id', SMT::Job::Constants::JOB_DATA_ATTRIBUTES, SMT::Job::Constants::JOB_DATA_ELEMENTS);
@@ -568,7 +568,7 @@ sub getJobsInfo_internal($)
 {
     my $self = shift || return undef;
     my $filter = shift || {};
-    return undef unless ( isa($filter, 'HASH') );
+#    return undef unless ( isa($filter, 'HASH') );
 
     # let create the SQL statement
     my $sql = $self->createSQLStatement($filter);
@@ -645,7 +645,7 @@ sub getJobsInfo($)
     my $self   = shift || return undef;
     my $filter = shift || {};
 
-    return undef unless ( isa($filter, 'HASH') );
+#    return undef unless ( isa($filter, 'HASH') );
     return $self->getJobsInfo_internal($filter);
 }
 

@@ -45,6 +45,7 @@ Requires:       perl-XML-Writer
 Requires:       perl-XML-XPath
 Requires:       perl-gettext
 Requires:       perl-libwww-perl
+Requires:	perl-solv
 Recommends:     mariadb
 Recommends:     perl-DBD-mysql
 Recommends:     yast2-mf-smt
@@ -174,8 +175,8 @@ ln -s /srv/www/htdocs/repo/tools/clientSetup4SMT.sh $RPM_BUILD_ROOT%{_docdir}/sm
 [ "$RPM_BUILD_ROOT" != "/" ] && [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT
 
 %pre
-if ! usr/bin/getent passwd smt >/dev/null; then
-  usr/sbin/useradd -r -g www -s /bin/false -c "User for SMT" -d /var/lib/smt smt 2> /dev/null || :
+if ! /usr/bin/getent passwd smt >/dev/null; then
+  /usr/sbin/useradd -r -g www -s /bin/false -c "User for SMT" -d /var/lib/smt smt 2> /dev/null || :
 fi
 
 %post

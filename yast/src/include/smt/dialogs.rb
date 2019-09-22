@@ -691,11 +691,7 @@ module Yast
       # defualt dialog return
       dialog_ret = :next
 
-      ccode = Convert.to_integer(SCR.Execute(path(".target.bash"), "/usr/bin/touch /etc/zypp/credentials.d/NCCcredentials"))
-
-      if ccode != 0
-	Builtins.y2milestone("Not able to create /etc/zypp/credentials.d/NCCcredentials file")
-      end
+      CreateNCCcredfile()
 
       if SMTData.GetSMTServiceStatus != true
         Builtins.y2milestone(
@@ -1320,6 +1316,32 @@ module Yast
       ret
     end
 
+    def CreateNCCcredfile
+      credfile="/etc/zypp/credentials.d/NCCcredentials"
+      if !FileUtils.Exists(credfile)
+        #Adding username to NCCcredentials file
+        usercmd = "/usr/bin/uuidgen |sed 's/-//g'"
+        userret = Convert.to_map(SCR.Execute(path(".target.bash_output"), usercmd))
+        username = Ops.get_string(userret, "stdout", "")
+        idx = Builtins.search(username, "\n")
+        username = Builtins.substring(username, 0, idx) if idx != nil
+        userwritecmd = Builtins.sformat("echo 'username=#{username}' > #{credfile}")
+        userwriteret = Convert.to_integer(SCR.Execute(path(".target.bash"), userwritecmd))
+
+        #Added password to NCCcredentials
+        passwordcmd = "/usr/bin/uuidgen |sed 's/-//g'"
+        passwordret = Convert.to_map(SCR.Execute(path(".target.bash_output"), passwordcmd))
+        password = Ops.get_string(passwordret, "stdout", "")
+        idx = Builtins.search(password, "\n")
+        password = Builtins.substring(password, 0, idx) if idx != nil
+        passwordwritecmd = Builtins.sformat("echo 'password=#{password}' >> #{credfile}")
+        passwordwriteret = Convert.to_integer(SCR.Execute(path(".target.bash"), passwordwritecmd))
+        Builtins.y2milestone("#{credfile} file created");
+      else
+       Builtins.y2milestone("#{credfile} already exists")
+      end
+    end
+
     def HandleCredentialsDialog(id, event)
       event = deep_copy(event)
       action = Ops.get(event, "ID")
@@ -1327,6 +1349,7 @@ module Yast
       #cc = Convert.to_string(UI.QueryWidget(Id(:protocol), :CurrentButton))
 
       if action == "test_NU_credentials"
+        CreateNCCcredfile()
         StoreCredentialsDialog(id, event)
         TestCredentials()
       elsif action == "scc"

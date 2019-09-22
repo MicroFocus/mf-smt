@@ -2,12 +2,11 @@
 NUUrl=https://nu.novell.com/
 NURegUrl=https://secure-www.novell.com/center/regsvc/
 # use these for testing
-NUUser=MIRRORUSER
-NUPass=MIRRIRPASSWORD
+NUUser=
+NUPass=
 
 [DB]
 config=dbi:mysql:database=smt;host=localhost
-#config=dbi:SQLite:dbname=/var/lib/SMT/db/smt.db
 user=smt
 pass=
 

@@ -1,4 +1,14 @@
 -------------------------------------------------------------------
+Sat Sep 21 04:16:49 UTC 2019 - hsuresh@microfocus.com
+
+- changed satsolver to solv in perl module 
+
+-------------------------------------------------------------------
+Thu Sep 19 09:47:39 UTC 2019 - hsuresh@microfocus.com
+
+- Changed the sql insert into syntax. 
+
+-------------------------------------------------------------------
 Wed Sep 11 11:00:12 UTC 2019 - hsuresh@microfocus.com
 
 - Initial submission 

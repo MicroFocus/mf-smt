@@ -462,7 +462,7 @@ sub getSMTGuid
     };
 
     if ($@) {
-        my $cache_file = '/var/cache/smt/scc_guid';
+        my $cache_file = '/var/cache/smt/ncc_guid';
         if ( -f $cache_file ) {
             if ( open( my $fh, '<', $cache_file ) ) {
                 $guid = <$fh>;
