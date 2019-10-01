@@ -33,9 +33,12 @@ Requires:       perl = %{perl_version}
 Requires:       perl-Config-IniFiles
 Requires:       perl-DBI
 Requires:       perl-Digest-SHA1
-Requires:       perl-JSON
-Requires:       perl-MIME-Lite
-Requires:       perl-Text-ASCIITable
+Requires:       perl-JSON 
+Conflicts:	perl-JSON > 2.90
+Requires:       perl-MIME-Lite 
+Conflicts:      perl-MIME-Lite > 3.030
+Requires:       perl-Text-ASCIITable 
+Conflicts:      perl-Text-ASCIITable > 0.20
 Requires:       perl-TimeDate
 Requires:       perl-URI
 Requires:       perl-WWW-Curl
@@ -46,6 +49,7 @@ Requires:       perl-XML-XPath
 Requires:       perl-gettext
 Requires:       perl-libwww-perl
 Requires:	perl-solv
+Requires:	perl-DateTime
 Recommends:     mariadb
 Recommends:     perl-DBD-mysql
 Recommends:     yast2-mf-smt
@@ -57,8 +61,11 @@ Group:          Productivity/Networking/Web/Proxy
 Source0:         %{name}-%{version}.tar.bz2
 Source1:        mf-smt-rpmlintrc
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
-Obsoletes:	smt <= 3.0.0
+Conflicts:	smt <= 3.0.0
+Conflicts:	smt-support <= 3.0.0
+obsoletes:	smt <= 3.0.0
 Obsoletes:	smt-support <= 3.0.0
+
 
 %description
 This package provide everything you need to get a local NU and
@@ -175,13 +182,25 @@ ln -s /srv/www/htdocs/repo/tools/clientSetup4SMT.sh $RPM_BUILD_ROOT%{_docdir}/sm
 [ "$RPM_BUILD_ROOT" != "/" ] && [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT
 
 %pre
-if ! /usr/bin/getent passwd smt >/dev/null; then
-  /usr/sbin/useradd -r -g www -s /bin/false -c "User for SMT" -d /var/lib/smt smt 2> /dev/null || :
+if ! usr/bin/getent passwd smt >/dev/null; then
+  usr/sbin/useradd -r -g www -s /bin/false -c "User for SMT" -d /var/lib/smt smt 2> /dev/null || :
 fi
 
 %post
 sysconf_addword /etc/sysconfig/apache2 APACHE_MODULES perl
 sysconf_addword /etc/sysconfig/apache2 APACHE_SERVER_FLAGS SSL
+#usr/bin/systemd-tmpfiles --create %{_tmpfilesdir}/%{name}.conf
+echo "d /var/run/smt 755 smt www" > /usr/lib/tmpfiles.d/mf-smt.conf
+
+%preun
+%service_del_preun smt-schema-upgrade.service
+%service_del_preun smt.service
+%service_del_preun smt.target
+
+# no postun service handling for target or schema-upgrade, we don't want them to be restarted on upgrade
+%postun
+
+%service_del_postun smt.service
 
 
 %files

@@ -191,6 +191,7 @@ sub setup
     my $host     = "localhost";
 
     system("systemctl enable smt.target");
+    system("systemctl enable smt-schema-upgrade.service");
     system("systemctl start mysql.service");
 
     print "mysql password for user $username: ";

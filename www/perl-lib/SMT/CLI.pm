@@ -15,6 +15,7 @@ use File::Temp;
 use File::Path;
 use File::Copy;
 use IO::File;
+use DateTime;
 
 use SMT::Parser::NU;
 #use SMT::Repositories;
@@ -1323,11 +1324,11 @@ sub setMirrorableCatalogs
                     if( uc($sqlres->{$cname}->{$target}->{Mirrorable}) eq "Y" )
                     {
                         printLog($opt{log}, $opt{vblevel}, LOG_INFO1,
-                                 sprintf(__("* repository not longer mirrorable '%s %s' ."), $cname, $target ));
+                              sprintf(__("* repository not longer mirrorable '%s %s' ."), $cname, $target ));
                         my $sth = $dbh->do( sprintf("UPDATE Catalogs SET Mirrorable='N' WHERE NAME=%s AND TARGET=%s
                                                      AND CATALOGTYPE = 'nu'",
                                                     $dbh->quote($cname), $dbh->quote($target) ));
-                    }
+                   }
                 }
             }
         }
@@ -2994,6 +2995,43 @@ sub subscriptionReport
     return \%report;
 
 }
+sub _parsex509time {
+    # from DateTime::Format::x509
+    my ($string) = @_;
+
+    $string =~ s/(...) (..) (..):(..):(..) (....) (...)// || die 'Incorrectly formatted datetime';
+    my ( $b, $d, $H, $M, $S, $Y, $Z ) = ($1, $2, $3, $4, $5, $6, $7);
+
+    my $month_by_name = {
+        Jan => 1,
+        Feb => 2,
+        Mar => 3,
+        Apr => 4,
+        May => 5,
+        Jun => 6,
+        Jul => 7,
+        Aug => 8,
+        Sep => 9,
+        Oct => 10,
+        Nov => 11,
+        Dec => 12
+    };
+
+    my $month = $month_by_name->{$b} || die 'Invalid month';
+
+    if($Z ne 'GMT' && $Z ne 'UTC') {
+        die "Invalid time zone '$Z'. RFC3161 requires times to be in UTC.";
+    }
+    return DateTime->new(
+        year       => 0 + $Y,
+        month      => $month,
+        day        => 0 + $d,
+        hour       => 0 + $H,
+        minute     => 0 + $M,
+        second     => 0 + $S,
+        time_zone  => 'UTC',
+    );
+}
 
 sub certificateExpireCheck
 {
@@ -3017,13 +3055,15 @@ sub certificateExpireCheck
     close VHOST;
 
     return undef if(! defined $certfile);
+    my $certEndTime = `openssl x509 -noout -enddate -in $certfile`;
+    if ($certEndTime =~ /notAfter=(.*)/) {
+        $certEndTime = _parsex509time($1);
+    }
+    else {
+        return;
+    }
 
-    my $certData = CaMgm::LocalManagement::getCertificate($certfile, $LIMAL::CaMgm::E_PEM);
-
-    my $endtime = $certData->getEndDate();
-    my $currentTime = time();
-
-    my $days = int( ($endtime-$currentTime) / ( 60*60*24) );
+    my $days = $certEndTime->delta_days(DateTime->now())->delta_days;
 
     printLog($options{log}, $options{vblevel}, LOG_DEBUG, "Check $certfile: Valid for $days days");
 

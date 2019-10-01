@@ -57,6 +57,7 @@ Requires:	hicolor-icon-theme
 Recommends:	mysql
 Recommends:	cron
 Recommends:	apache2
+Obsoletes:      yast2-smt <= 3.0.0
 
 # If CA is missing, SMT offers to create one
 %if 0%{?sle_version} < 0150000
@@ -105,9 +106,11 @@ done
 
 %post
 %desktop_database_post
+%icon_theme_cache_post
 
 %postun
 %desktop_database_postun
+%icon_theme_cache_postun
 
 %clean
 rm -rf "$RPM_BUILD_ROOT"

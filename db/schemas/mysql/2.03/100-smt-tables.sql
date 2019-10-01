@@ -21,8 +21,8 @@ CREATE TABLE migration_schema_version (
           version double NOT NULL,
           CONSTRAINT migration_schema_version_name_pk PRIMARY KEY (name)
 ) ENGINE=InnoDB;
-insert into migration_schema_version(name,version) 
-values('smt','2.03');
+insert into migration_schema_version(name,version)
+values('smt',2.03);
 
 CREATE TABLE migration_schema_log (
   schema_name varchar(128) NOT NULL,

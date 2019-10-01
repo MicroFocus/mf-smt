@@ -1,4 +1,19 @@
 -------------------------------------------------------------------
+Tue Oct  1 08:51:34 UTC 2019 - hsuresh@microfocus.com
+
+- Added smt folder under /var/run folder
+
+-------------------------------------------------------------------
+Thu Sep 26 13:51:43 UTC 2019 - hsuresh@microfocus.com
+
+- Changed smt sync script name and perl module warnings
+
+-------------------------------------------------------------------
+Wed Sep 25 06:48:35 UTC 2019 - hsuresh@microfocus.com
+
+- Added conflicts for smt 
+
+-------------------------------------------------------------------
 Sat Sep 21 04:16:49 UTC 2019 - hsuresh@microfocus.com
 
 - changed satsolver to solv in perl module 

@@ -1,4 +1,14 @@
 -------------------------------------------------------------------
+Tue Oct  1 08:40:54 UTC 2019 - hsuresh@microfocus.com
+
+- Added smt-wizard module 
+
+-------------------------------------------------------------------
+Thu Sep 26 09:49:12 UTC 2019 - hsuresh@microfocus.com
+
+- Changed smt sync script name 
+
+-------------------------------------------------------------------
 Thu Sep 19 07:06:06 UTC 2019 - hsuresh@microfocus.com
 
 - Creating NCCcredentials file  
