@@ -158,7 +158,7 @@ rm -f www/perl-lib/SMT/RESTService.pm.$$$$
 make DESTDIR=$RPM_BUILD_ROOT DOCDIR=%{_docdir} install
 make DESTDIR=$RPM_BUILD_ROOT install_conf
 
-ln -sf service %{buildroot}/%{_sbindir}/rcsmt
+#ln -sf service %{buildroot}/%{_sbindir}/rcsmt
 
 mkdir -p $RPM_BUILD_ROOT%{_mandir}/man1
 mkdir -p $RPM_BUILD_ROOT%{_mandir}/man3
@@ -256,7 +256,7 @@ echo "d /var/run/smt 755 smt www" > /usr/lib/tmpfiles.d/mf-smt.conf
 /srv/www/perl-lib/SMT/Client/*.pm
 %exclude /srv/www/perl-lib/SMT/Support.pm
 /usr/sbin/smt-*
-/usr/sbin/rcsmt
+#/usr/sbin/rcsmt
 %exclude /usr/sbin/smt-support
 /usr/sbin/smt
 /usr/lib/SMT/bin/*

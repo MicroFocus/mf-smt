@@ -1321,14 +1321,17 @@ sub setMirrorableCatalogs
             {
                 foreach my $target ( keys %{$sqlres->{$cname}})
                 {
-                    if( uc($sqlres->{$cname}->{$target}->{Mirrorable}) eq "Y" )
-                    {
-                        printLog($opt{log}, $opt{vblevel}, LOG_INFO1,
-                              sprintf(__("* repository not longer mirrorable '%s %s' ."), $cname, $target ));
-                        my $sth = $dbh->do( sprintf("UPDATE Catalogs SET Mirrorable='N' WHERE NAME=%s AND TARGET=%s
+		    if ( exists $sqlres->{$cname}->{$target}->{Mirrorable})
+		    {	
+                        if( uc($sqlres->{$cname}->{$target}->{Mirrorable}) eq "Y" )
+                        {
+                            printLog($opt{log}, $opt{vblevel}, LOG_INFO1,
+                                sprintf(__("* repository not longer mirrorable '%s %s' ."), $cname, $target ));
+                            my $sth = $dbh->do( sprintf("UPDATE Catalogs SET Mirrorable='N' WHERE NAME=%s AND TARGET=%s
                                                      AND CATALOGTYPE = 'nu'",
                                                     $dbh->quote($cname), $dbh->quote($target) ));
-                   }
+                        }   
+                    }
                 }
             }
         }

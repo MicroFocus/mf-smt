@@ -82,7 +82,7 @@ sub optimize
 
 sub migrate
 {
-    `smt-schema-migration`;
+    `smt-schema-upgrade --yes`;
     return 0;
 }
 
@@ -306,6 +306,7 @@ sub setup
     chown 0, $gid, "/etc/smt.conf";
 
     `smt-sql --select-mode-direct /usr/share/schemas/smt/mysql/2.03/100-smt-tables.sql > /var/log/smt/smt-db-setup.log`;
+    system("systemctl start smt-schema-upgrade.service");
     return 0;
 }
 
