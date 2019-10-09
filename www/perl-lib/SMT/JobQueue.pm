@@ -157,7 +157,7 @@ sub getNextJobID($)
      $sql .= ' limit 1';
 
   my $sel = $self->{dbh}->selectrow_arrayref($sql);
-  my $id  = ( isa($sel, 'ARRAY') && defined $sel->[0] ) ? $sel->[0] : undef;
+  my $id  = ( UNIVERSAL::isa($sel, 'ARRAY') && defined $sel->[0] ) ? $sel->[0] : undef;
 
   if ( defined $id )
   {
