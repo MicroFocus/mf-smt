@@ -73,10 +73,10 @@ BuildRequires:	yast2-branding-SLE
 BuildArchitectures:	noarch
 Obsoletes:	yast2-smt <= 3.0.0
 
-Summary:	Configuration of Subscription Management Tool for SUSE Linux Enterprise
+Summary:	Configuration of Micro Focus Subscription Management Tool for SUSE Linux Enterprise
 
 %description
-Provides the YaST module for SMT configuration.
+Provides the YaST module for Micro Focus SMT configuration.
 
 %prep
 %setup -n yast2-mf-smt-%{version}

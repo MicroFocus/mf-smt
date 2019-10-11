@@ -55,7 +55,7 @@ Recommends:     perl-DBD-mysql
 Recommends:     yast2-mf-smt
 Conflicts:      slms-registration
 Conflicts:      mf-smt-client <= 0.0.14
-Summary:        Subscription Management Tool
+Summary:        Micro Focus Subscription Management Tool
 License:        GPL-2.0+
 Group:          Productivity/Networking/Web/Proxy
 Source0:         %{name}-%{version}.tar.bz2
@@ -104,7 +104,7 @@ Authors:
 
 %package support
 
-Summary:        SMT support proxy
+Summary:        Micro Focus SMT support proxy
 Group:          Productivity/Networking/Web/Proxy
 PreReq:         mf-smt = %version
 
