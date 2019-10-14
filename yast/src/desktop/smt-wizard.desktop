@@ -21,8 +21,8 @@ X-SuSE-YaST-AutoInstResource=smt
 Icon=yast-smt
 Exec=/sbin/yast2 smt-wizard
 
-Name=SMT Configuration Wizard
-GenericName=SMT Server Configuration Wizard
+Name=Micro Focus SMT Configuration Wizard
+GenericName=Micro Focus SMT Server Configuration Wizard
 X-KDE-SubstituteUID=true
 
 

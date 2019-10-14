@@ -19,6 +19,6 @@ X-SuSE-YaST-AutoInstResource=smt
 Icon=yast-smt
 Exec=/sbin/yast2 smt
 
-Name=SMT Server Management
-GenericName=SMT Server Management
+Name=Micro Focus SMT Server Management
+GenericName=Micro Focus SMT Server Management
 X-KDE-SubstituteUID=true
