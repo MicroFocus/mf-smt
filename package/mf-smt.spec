@@ -261,12 +261,12 @@ echo "d /var/run/smt 755 smt www" > /usr/lib/tmpfiles.d/mf-smt.conf
 /usr/sbin/smt
 /usr/lib/SMT/bin/*
 /usr/bin/smt*
-/usr/lib/systemd/system/smt.target
 %{_libexecdir}/systemd/system/smt.service
 %{_libexecdir}/systemd/system/smt-schema-upgrade.service
 /srv/www/htdocs/repo/tools/*
 %{_datadir}/schemas/smt/*
 /usr/bin/smt-*
+%attr(644, root, root) /usr/lib/systemd/system/smt.target
 %doc %attr(644, root, root) %{_mandir}/man3/*
 %doc %attr(644, root, root) %{_mandir}/man1/*
 %exclude %{_mandir}/man1/smt-support.1.gz
