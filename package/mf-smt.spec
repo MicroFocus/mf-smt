@@ -24,6 +24,7 @@ BuildRequires:  swig
 Version:        3.0.1
 Release:        0
 Requires(pre):  apache2 apache2-mod_perl pwdutils
+Requires:	htmldoc
 Requires:       createrepo
 Requires:       gpg2
 Requires:       perl-camgm
