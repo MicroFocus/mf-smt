@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Oct 18 07:14:26 UTC 2019 - hsuresh@microfocus.com
+
+- B-137188 : added smt-data-export script
+
+-------------------------------------------------------------------
 Thu Oct 17 07:49:48 UTC 2019 - hsuresh@microfocus.com
 
 - Added dependency on htmldoc package
