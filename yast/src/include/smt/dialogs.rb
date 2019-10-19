@@ -197,14 +197,14 @@ module Yast
                     MinWidth(
                       40,
                       # TRANSLATORS: text entry
-                      InputField(Id("NURegUrl"), _("&Registration Server Url"))
+                      InputField(Id("NURegUrl"), Opt(:disabled), _("&Registration Server Url"))
                     )
                   ),
                   HSquash(
                     MinWidth(
                       40,
                       # TRANSLATORS: text entry
-                      InputField(Id("NUUrl"), _("&Download Server Url"))
+                      InputField(Id("NUUrl"), Opt(:disabled), _("&Download Server Url"))
                     )
                   ),
                   HSquash(

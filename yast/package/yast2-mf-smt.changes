@@ -1,6 +1,12 @@
 -------------------------------------------------------------------
-Fri Oct 18 06:39:44 UTC 2019 - hsuresh@microfocus.com
+Fri Oct 18 08:51:05 UTC 2019 - hsuresh@microfocus.com
 
+- Added latest yast2-smt icons 
+
+-------------------------------------------------------------------
+Fri Oct 18 07:26:52 UTC 2019 - hsuresh@microfocus.com
+
+- B-137188 : Disabled Registration server and Download server URL
 - B-137188 : adding service list 
 
 -------------------------------------------------------------------
