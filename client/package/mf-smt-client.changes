@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Sun Oct 20 10:47:13 UTC 2019 - hsuresh@microfocus.com
+
+- Changed SCCcredentials to NCCcredentials 
+
+-------------------------------------------------------------------
 Mon Oct 14 10:52:04 UTC 2019 - hsuresh@microfocus.com
 
 - Removed SUSEConnect entries

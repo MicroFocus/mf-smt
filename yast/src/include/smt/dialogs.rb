@@ -727,7 +727,7 @@ module Yast
             _(
               "SMT is unable to set %1 file permissions\nto be readable by %2 user."
             ),
-            SMTData.GetSCCcredentialsFile,
+            SMTData.GetNCCcredentialsFile,
             SMTData.GetCredentials("DB", "user")
           )
         )
