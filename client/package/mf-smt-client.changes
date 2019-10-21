@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Mon Oct 21 06:37:45 UTC 2019 - hsuresh@microfocus.com
+
+- B-137188 : fixed smt-agent issue
+
+-------------------------------------------------------------------
 Sun Oct 20 10:47:13 UTC 2019 - hsuresh@microfocus.com
 
 - Changed SCCcredentials to NCCcredentials 

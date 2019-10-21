@@ -36,7 +36,7 @@ my %retval;
 if ( (not SMT::Agent::Utils::isAgentAllowed($jobdata{type}))  &&  ($jobdata{type} ne 'servererror') )
 {
   SMT::Agent::Utils::logger("Running ". $jobdata{type}. " denied by client policy", $jobdata{id} );
-  $ret = SMT::Agent::RestXML::updatejob ( $jobdata{id}, 3 , "denied by client policy", "", "", "", undef );
+  $ret = SMT::Agent::RestXML::updatejob ( $jobdata{id}, 3 , "denied by client policy", "", "", 3, undef );
 }
 else
 {
