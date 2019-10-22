@@ -32,7 +32,7 @@ use constant REST_GET_JOB	=> REST_START_SEQ.REST_VERSION.'/jobs/';
 use constant LOG_FILE		=> '/var/log/smtclient.log';
 
 # client config file
-use constant CLIENT_CONFIG_FILE	=> '/etc/sysconfig/smt-client';
+use constant CLIENT_CONFIG_FILE	=> '/etc/sysconfig/mf-smt-client';
 
 # smt client credenitials file containing guid
 #  SLE11 => /etc/zypp/credentials.d/NCCcredentials
