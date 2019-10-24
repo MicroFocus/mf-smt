@@ -65,7 +65,7 @@ SSL_CN_NAME=""
 # if an entry starts with a dot (.) the whole domain is denied
 # Example: smt.foo .bar
 #
-DENIED_SMT_SERVERS=".novell.com"
+DENIED_SMT_SERVERS="example.com"
 
 
 
