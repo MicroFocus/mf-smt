@@ -1,5 +1,5 @@
 [Unit]
-Description=SMT Maintenance tasks
+Description=Micro Focus SMT Maintenance tasks
 Requires=mysql.service
 After=mysql.service
 Before=apache2.service

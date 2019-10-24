@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Wed Oct 23 06:11:10 UTC 2019 - suresh.hosamani@microfocus.com
+
+- B-137188 : added 100-drop-migration-schema-log.sql file 
+
+-------------------------------------------------------------------
 Fri Oct 18 07:14:26 UTC 2019 - hsuresh@microfocus.com
 
 - B-137188 : added smt-data-export script

@@ -1,5 +1,5 @@
 [Unit]
-Description=SMT
+Description=Micro Focus SMT
 Requires=cron.service
 Requires=mysql.service
 Requires=smt.service
