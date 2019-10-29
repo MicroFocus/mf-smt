@@ -1,5 +1,5 @@
 #
-# spec file for package smt
+# spec file for package mf-smt
 #
 # Copyright (c) 2015 SUSE LINUX Products GmbH, Nuernberg, Germany.
 #
@@ -62,10 +62,10 @@ Group:          Productivity/Networking/Web/Proxy
 Source0:         %{name}-%{version}.tar.bz2
 Source1:        mf-smt-rpmlintrc
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
-Conflicts:	smt <= 3.0.0
-Conflicts:	smt-support <= 3.0.0
-obsoletes:	smt <= 3.0.0
-Obsoletes:	smt-support <= 3.0.0
+Conflicts:	smt 
+Conflicts:	smt-support 
+obsoletes:	smt 
+Obsoletes:	smt-support 
 
 
 %description

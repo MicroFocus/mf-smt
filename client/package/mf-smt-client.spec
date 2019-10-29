@@ -1,5 +1,5 @@
 #
-# spec file for package smt-client
+# spec file for package mf-smt-client
 #
 # Copyright (c) 2012 SUSE LINUX Products GmbH, Nuernberg, Germany.
 #
@@ -44,7 +44,7 @@ Source1:        sysconfig.mf-smt-client
 Source2:        mf-smt-client-rpmlintrc
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 URL:            https://github.com/SUSE/smt
-Obsoletes:	smt-client <= 1.0.2
+Obsoletes:	smt-client 
 
 %description
 This package provide everything you need to get a local NU and

@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Oct 25 07:33:03 UTC 2019 - suresh.hosamani@microfocus.com
+
+- B-137188 : added Micro Focus to service file
+
+-------------------------------------------------------------------
 Wed Oct 23 06:11:10 UTC 2019 - suresh.hosamani@microfocus.com
 
 - B-137188 : added 100-drop-migration-schema-log.sql file 

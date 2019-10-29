@@ -1,5 +1,5 @@
 [Unit]
-Description=SMT database and schema upgrade service
+Description=Micro Focus SMT database and schema upgrade service
 Requires=mysql.service
 After=mysql.service
 Before=apache2.service
