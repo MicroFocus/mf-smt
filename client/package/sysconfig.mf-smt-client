@@ -1,5 +1,5 @@
 ## Path: System/SMT-Client
-## Description: Configuration of SMT Client
+## Description: Configuration of Micro Focus SMT Client
 
 ## Type:    string(patchstatus,softwarepush,update,execute,reboot,wait,eject,createjob,report,inventory)
 ## Default: "softwarepush patchstatus update inventory createjob report"

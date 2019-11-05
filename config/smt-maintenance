@@ -1,6 +1,7 @@
 #!/bin/sh
 #
 # Copyright (c) 2008-2015 SUSE LLC
+# Copyright (c) 2019 Micro Focus or one of its Affiliates
 #
 # Authors:	Lukas Ocilka <locilka@suse.cz>
 #               Michael Calmer <mc@suse.com>

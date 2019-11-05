@@ -2,6 +2,7 @@
 # spec file for package mf-smt-client
 #
 # Copyright (c) 2012 SUSE LINUX Products GmbH, Nuernberg, Germany.
+# Copyright (c) 2019 Micro Focus or one of its Affiliates
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed

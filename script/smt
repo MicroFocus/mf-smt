@@ -2,6 +2,7 @@
 
 ###############################################################################
 ## Copyright (c) 2007-2012 SUSE LINUX Products GmbH, Nuernberg, Germany.
+## Copyright (c) 2019 Micro Focus or one of its Affiliates
 ###############################################################################
 
 use strict;
@@ -29,6 +30,7 @@ sub help
     closedir DIR;
 
     print __("Subscription Management Tool (SMT). (c)2007-2015 SUSE LINUX Products GmbH, Nuernberg, Germany.\n\n");
+    print __("Micro Focus Subscription Management Tool (SMT). (c)2019 Micro Focus or one of its Affiliates.\n\n");
 
     foreach my $cmd (@files)
     {
@@ -135,6 +137,7 @@ Duncan Mac-Vicar Prett, Lukas Ocilka, Jens Daniel Schmidt, Michael Calmer
 =head1 LICENSE
 
 Copyright (c) 2007-2012 SUSE LINUX Products GmbH, Nuernberg, Germany.
+Copyright (c) 2019 Micro Focus or one of its Affiliates
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
