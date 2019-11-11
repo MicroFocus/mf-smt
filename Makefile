@@ -107,6 +107,7 @@ install:
 
 	install -m 644 README $(DESTDIR)$(DOCDIR)/smt/
 	install -m 644 COPYING $(DESTDIR)$(DOCDIR)/smt/
+	install -m 644 License.txt $(DESTDIR)$(DOCDIR)/smt/
 	install -m 644 doc/High-Level-Architecture.odp $(DESTDIR)$(DOCDIR)/smt/
 	install -m 644 doc/Registrationdata-NCC-YEP.odt $(DESTDIR)$(DOCDIR)/smt/
 	install -m 644 doc/SMT-Database-Schema.odg $(DESTDIR)$(DOCDIR)/smt/
@@ -196,7 +197,7 @@ dist: clean
                   \( -type f -exec install -m644 \{\} $(NAME)-$(VERSION)/\{\} \; \) \
                 \)
 	make -C swig NAME=$(NAME) VERSION=$(VERSION) $@
-	@cp Makefile README COPYING $(NAME)-$(VERSION)/
+	@cp Makefile README COPYING License.txt $(NAME)-$(VERSION)/
 
 	tar cfvj $(NAME)-$(VERSION).tar.bz2 $(NAME)-$(VERSION)/
 

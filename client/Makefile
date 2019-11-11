@@ -41,6 +41,7 @@ install:
 
 	install -m 644 README $(DESTDIR)$(DOCDIR)/$(NAME)/
 	install -m 644 COPYING $(DESTDIR)$(DOCDIR)/$(NAME)/
+	install -m 644 License.txt $(DESTDIR)$(DOCDIR)/$(NAME)/
 
 test: clean
 	cd tests; perl tests.pl && cd -
@@ -65,6 +66,7 @@ dist: clean
 #	@cp cron/novell.com-smt $(NAME)-$(VERSION)/cron/
 	@cp README $(NAME)-$(VERSION)/
 	@cp COPYING $(NAME)-$(VERSION)/
+	@cp License.txt $(NAME)-$(VERSION)/
 	@cp script/* $(NAME)-$(VERSION)/script/
 	@cp logrotate/mf-smt-client $(NAME)-$(VERSION)/logrotate/
 	find perl-lib -name ".svn" -prune -o \
