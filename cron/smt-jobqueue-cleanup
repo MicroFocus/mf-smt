@@ -2,7 +2,7 @@
 
 ###############################################################################
 ## Copyright (c)  2009-2012 SUSE LINUX Products GmbH, Nuernberg, Germany.
-## Copyright (c) 2019 Micro Focus or one of its Affiliates
+## (c) Copyright [2019] Micro Focus or one of its affiliates.
 ###############################################################################
 
 use strict;

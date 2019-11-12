@@ -2,7 +2,7 @@
 # spec file for package mf-smt
 #
 # Copyright (c) 2015 SUSE LINUX Products GmbH, Nuernberg, Germany.
-# Copyright (c) 2019 Micro Focus or one of its Affiliates
+# (c) Copyright [2019] Micro Focus or one of its affiliates.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -15,7 +15,16 @@
 
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
+# Licensed under the GPLv2 License (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at:
+# (https://opensource.org/licenses/GPL-2.0)
 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
 Name:           mf-smt

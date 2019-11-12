@@ -18,6 +18,8 @@ ynclude_DATA = \
 control_DATA = \
 	control/smt_control.xml
 
+license_DATA =  ../License.txt
+
 ybin_SCRIPTS = scripts/regsrv-check-creds
 
 desktop_DATA = $(wildcard desktop/*.desktop)
@@ -30,7 +32,8 @@ module_DATA = $(wildcard modules/SMT*.rb)
 #ycpchook = smt
 
 controldir = $(yast2dir)/control
+licensedir = $(docdir)
 
-EXTRA_DIST = $(module_DATA) $(client_DATA) $(ynclude_DATA) $(desktop_DATA) $(control_DATA) $(ybin_SCRIPTS)
+EXTRA_DIST = $(module_DATA) $(client_DATA) $(ynclude_DATA) $(desktop_DATA) $(control_DATA) $(ybin_SCRIPTS) $(license_DATA)
 
 include $(top_srcdir)/Makefile.am.common
