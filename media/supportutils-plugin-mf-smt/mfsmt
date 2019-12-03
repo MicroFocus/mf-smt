@@ -1,0 +1,312 @@
+#!/bin/bash
+
+#/****************************************************************************
+# |
+# |     Copyright ©  2019 Micro Focus. All rights reserved.
+# |
+# |     This program is an unpublished copyrighted work which is proprietary
+# |     to Micro Focus and contains confidential information that is not
+# |     to be reproduced or disclosed to any other person or entity without
+# |     prior written consent from Micro Focus in each and every instance.
+# |
+# |     WARNING:  Unauthorized reproduction of this program as well as
+# |     unauthorized preparation of derivative works based upon the
+# |     program or distribution of copies by sale, rental, lease or
+# |     lending are violations of federal copyright laws and state trade
+# |     secret laws, punishable by civil and criminal penalties.
+# |
+# +***************************************************************************/
+OPTION_MF_SMT=1
+
+VAR_OPTION_HEADER_FILE='/usr/lib/supportconfig/header.txt'
+VAR_OPTION_WAIT_TRACE=0
+VAR_OPTION_SILENT=0
+VAR_OPTION_DMESG=0
+VAR_OPTION_HEADER_FILE='/usr/lib/supportconfig/header.txt'
+VAR_OPTION_SBM=0
+VAR_OPTION_LINE_COUNT=500
+ADD_OPTION_LOGS=0
+OPTION_OCS=1
+OPTION_OES_FTP=1
+CSFILE=${CURRENT_SCRIPT}.txt
+RPMFILE=rpm.txt
+file /sbin/init | grep "systemd" &>/dev/null && SYSTEMD=1 || SYSTEMD=0
+
+# log_entry file type label
+log_entry() {
+        LOGFILE=$LOG/$1
+        shift
+        ENTRY_TYPE=$1
+        shift
+        ENTRY_LABEL="$@"
+        case $ENTRY_TYPE in
+        command) ENTRY_HEADER="#==[ Command ]======================================#" ;;
+        conf) ENTRY_HEADER="#==[ Configuration File ]===========================#";;
+        log) ENTRY_HEADER="#==[ Log File ]=====================================#" ;;
+        note) ENTRY_HEADER="#==[ Note ]=========================================#" ;;
+        summary) ENTRY_HEADER="#==[ Summary ]======================================#" ;;
+        *) ENTRY_HEADER="#==[ Entry ]========================================#";;
+        esac
+        echo "$ENTRY_HEADER" >> $LOGFILE
+        echo "# $ENTRY_LABEL" >> $LOGFILE
+        echo >> $LOGFILE
+}
+
+log2sys() {
+        MSG="$@"
+        if (( $VAR_OPTION_DMESG )); then
+                echo "supportconfig: [$(date +%y%m%d:%H:%M:%S)] $MSG" > /dev/kmsg
+        else
+                logger -t supportconfig "$MSG"
+        fi
+}
+
+wait_trace_on() {
+        if (( $VAR_OPTION_WAIT_TRACE )); then
+                OPT=$1
+                case $OPT in
+                -t) TEE=0; shift ;;
+                *) TEE=1 ;;
+                esac
+                LOGGING="$@"
+                WT_START=$(date +%T:%N)
+                log2sys "<$WT_START> $LOGGING"
+                if (( $TEE )); then
+                        printf "%s" "    <$WT_START> $LOGGING  " | tee -a ${LOG}/${CSFILE}
+                else
+                        printf "%s" "    <$WT_START> $LOGGING  "
+                fi
+        fi
+}
+
+# Input: logfilename "text"
+log_write() {
+        LOGFILE=$LOG/$1
+        shift
+        echo "$@" >> $LOGFILE
+}
+
+wait_trace_off() {
+        if (( $VAR_OPTION_WAIT_TRACE )); then
+                OPT=$1
+                case $OPT in
+                -t) TEE=0 ;;
+                *) TEE=1 ;;
+                esac
+                WT_END=$(date +%T:%N)
+                if (( $TEE )); then
+                        echo "<$WT_END>" | tee -a ${LOG}/${CSFILE}
+                else
+                        echo "<$WT_END>"
+                fi
+        fi
+}
+
+addHeaderFile() {
+        OPEN=$1
+        if [ -s $VAR_OPTION_HEADER_FILE ]; then
+                wait_trace_on "cat $VAR_OPTION_HEADER_FILE"
+                log_entry $OPEN note $VAR_OPTION_HEADER_FILE
+                cat $VAR_OPTION_HEADER_FILE >> $LOG/$OPEN
+                log_write $OPEN
+                wait_trace_off
+        fi
+}
+
+printlog() {
+        CSLOGFILE=$LOG/${CSFILE}
+        SMB_OVERIDE=0
+        if [ "$1" = "-b" ]; then
+                SMB_OVERIDE=1
+                shift
+        fi
+        log2sys "$@"
+        if (( $VAR_OPTION_SILENT )); then
+                printf "  %-45s" "$@" >> $CSLOGFILE
+        else
+                if (( $VAR_OPTION_SBM )) || (( $SMB_OVERIDE )); then
+                        echo "$@" | tee -a $CSLOGFILE
+                else
+                        printf "  %-45s" "$@" | tee -a $CSLOGFILE
+                fi
+        fi
+}
+
+# Input: logfilename command
+log_cmd() {
+        EXIT_STATUS=0
+        LOGFILE=$LOG/$1
+        shift
+        CMDLINE_ORIG="$@"
+        CMDBIN=$(echo $CMDLINE_ORIG | awk '{print $1}')
+        CMD=$(\which $CMDBIN 2>/dev/null | awk '{print $1}')
+        echo "#==[ Command ]======================================#" >> $LOGFILE
+        if [ -x "$CMD" ]; then
+                CMDLINE=$(echo $CMDLINE_ORIG | sed -e "s!${CMDBIN}!${CMD}!")
+                echo "# $CMDLINE" >> $LOGFILE
+                wait_trace_on "$CMDLINE"
+                echo "$CMDLINE" | bash  >> $LOGFILE 2>&1
+                EXIT_STATUS=$?
+                wait_trace_off
+        else
+                echo "# $CMDLINE_ORIG" >> $LOGFILE
+                echo "ERROR: Command not found or not executible" >> $LOGFILE
+                EXIT_STATUS=1
+        fi
+        echo >> $LOGFILE
+        return $EXIT_STATUS
+}
+
+# Input: logfilename logfiles...
+conf_files() {
+        LOGFILE=$LOG/$1
+        shift
+        for CONF in $@
+        do
+                echo "#==[ Configuration File ]===========================#" >> $LOGFILE
+                if [ -f $CONF ]; then
+                        echo "# $CONF" >> $LOGFILE
+                        wait_trace_on "$CONF"
+                        if (( ADD_OPTION_LOGS )); then
+                                cat $CONF 2>> $LOG/$CSFILE | sed -e 's/\r//g' >> $LOGFILE 2>> $LOG/$CSFILE
+                        else
+                                cat $CONF 2>> $LOG/$CSFILE | sed -e '/^[[:space:]]*#/d;/^[[:space:]]*;/d;s/\r//g;/^[[:space:]]*$/d' >> $LOGFILE 2>> $LOG/$CSFILE
+                        fi
+                        echo >> $LOGFILE
+                        wait_trace_off
+                else
+                        echo "# $CONF - File not found" >> $LOGFILE
+                fi
+                echo >> $LOGFILE
+        done
+}
+
+# Input: logfilename lines logfiles...
+# If lines = 0, includes the entire log file
+log_files() {
+        LOGFILE=$LOG/$1
+        shift
+        LOGLINES=$1
+        shift
+        for CONF in $@
+        do
+                BAD_FILE=$(echo "$CONF" | egrep "\.tbz$|\.bz2$|\.gz$|\.zip$|\.xz$")
+                if [ -n "$BAD_FILE" ]; then
+                        continue
+                fi
+                echo "#==[ Log File ]=====================================#" >> $LOGFILE
+                CONF=$(echo $CONF | sed -e "s/%7B%20%7D%7B%20%7D/ /g")
+                if [ -f "$CONF" ]; then
+                        wait_trace_on "$CONF"
+                        if [ $LOGLINES -eq 0 ]; then
+                                echo "# $CONF" >> $LOGFILE
+                                sed -e 's/\r//g' "$CONF" >> $LOGFILE
+                        else
+                                echo "# $CONF - Last $LOGLINES Lines" >> $LOGFILE
+                                tail -$LOGLINES "$CONF" | sed -e 's/\r//g' >> $LOGFILE
+                        fi
+                        echo >> $LOGFILE
+                        wait_trace_off
+                else
+                        echo "# $CONF - File not found" >> $LOGFILE
+                fi
+                echo >> $LOGFILE
+        done
+}
+
+echolog() {
+        CSLOGFILE=$LOG/${CSFILE}
+        if (( $VAR_OPTION_DMESG )); then
+                echo "supportconfig: [$(date +%y%m%d:%H:%M:%S)]  $@" > /dev/kmsg
+        fi
+        if (( $VAR_OPTION_SILENT )); then
+                echo "$@" >> $CSLOGFILE
+        else
+                if (( ! $VAR_OPTION_SBM )); then
+                        echo "$@" | tee -a $CSLOGFILE
+                fi
+        fi
+}
+
+check_service() {
+        LOGFILE=$LOG/$1
+        BASEFILE=$1
+        SERVICE_NAME=$2
+        SYSTEMD_DIR=/usr/lib/systemd/system
+        if [ $SYSTEMD == 1 ] && [ -f $SYSTEMD_DIR/${SERVICE_NAME}.service ]; then
+                log_cmd $BASEFILE "systemctl status $SERVICE_NAME"
+                log_cmd $BASEFILE "systemctl is-enabled $SERVICE_NAME"
+        else
+                log_cmd $BASEFILE "chkconfig $SERVICE_NAME --list"
+                log_cmd $BASEFILE "/etc/init.d/$SERVICE_NAME status"
+        fi
+        return $?
+}
+
+# Input: logfilename rpm
+# Assumes the rpm is installed and $LOG/$RPMFILE has been created
+rpm_verify() {
+        RPMPATH=$LOG/$RPMFILE
+        LOGFILE=$LOG/$1
+        INPUT_RPM=$2
+        echo "#==[ Verification ]=================================#" >> $LOGFILE
+        if rpm -q $INPUT_RPM &>/dev/null
+        then
+                for RPM in $(rpm -q $INPUT_RPM)
+                do
+                        echo "# rpm -V $RPM" >> $LOGFILE
+                        wait_trace_on "rpm -V $RPM"
+                        rpm -V $RPM >> $LOGFILE 2>&1
+                        ERR=$?
+                        wait_trace_off
+                        if [ $ERR -gt 0 ]; then
+                                echo "# Verification Status: Differences Found" >> $LOGFILE
+                        else
+                                echo "# Verification Status: Passed" >> $LOGFILE
+                        fi
+                        echo >> $LOGFILE
+                done
+                #cat $RPMPATH | grep "^$INPUT_RPM " >> $LOGFILE
+                #echo >> $LOGFILE
+                return 0
+        else
+                echo "# RPM Not Installed: $INPUT_RPM" >> $LOGFILE
+                echo >> $LOGFILE
+                return 1
+        fi
+}
+
+
+mf_smt_info() {
+        printlog "MF SMT..."
+        test $OPTION_MF_SMT -eq 0 && { echolog Excluded; return 1; }
+        OF=mf-smt.txt
+        addHeaderFile $OF
+        if rpm_verify $OF mf-smt; then
+                check_service $OF smt
+                check_service $OF apache2
+                check_service $OF mysql
+                check_service $OF cron
+                check_service $OF smt-schema-upgrade
+                CONF=/etc/smt.conf
+                conf_files $OF /etc/smt.conf
+                sed -i -e 's/^NUPass[[:space:]]*=.*/NUPass=*REMOVED BY SUPPORTCONFIG*/;s/^pass[[:space:]]*=.*/pass=*REMOVED BY SUPPORTCONFIG*/;s/^ProxyUser[[:space:]]*=.*/ProxyUser=*REMOVED BY SUPPORTCONFIG*/;s/^mailServerPassword[[:space:]]*=.*/mailServerPassword=*REMOVED BY SUPPORTCONFIG*/;s/^credentials[[:space:]]*=.*/credentials=*REMOVED BY SUPPORTCONFIG*/' $LOG/$OF
+                FILES=$(find -L /etc/smt.d/ -type f 2>/dev/null)
+                conf_files $OF $FILES
+                log_cmd $OF 'smt-catalogs'
+                log_cmd $OF 'smt-catalogs -o'
+                log_cmd $OF 'smt-list-registrations'
+                log_cmd $OF 'smt-list-products'
+                if [ -d /srv/www/htdocs/repo ]; then
+                        log_cmd $OF 'find -L /srv/www/htdocs/repo -print0 | sort -z | xargs -0 ls -ld --time-style=long-iso'
+                fi
+                FILES=$(find -L /var/log/ -type f | grep smt- | grep log$)
+                test $ADD_OPTION_LOGS -gt 0 && log_files $OF 0 $FILES || log_files $OF $VAR_OPTION_LINE_COUNT $FILES
+                echolog Done
+        else
+                echolog Skipped
+        fi
+}
+
+mf_smt_info
+

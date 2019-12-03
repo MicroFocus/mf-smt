@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE productDefines SYSTEM "/usr/share/YaST2/control/control.dtd">
+<productDefines xmlns="http://www.suse.com/1.0/yast2ns" xmlns:config="http://www.suse.com/1.0/configns">
+    <textdomain>control-SMT</textdomain>
+
+	<!-- Installation on a running system -->
+    <update>
+	<workflows config:type="list">
+	    <workflow>
+                <mode>update</mode>
+                <stage>initial</stage>
+
+
+		<!-- Installation: Insert -->
+		<insert_modules config:type="list">
+		    <insert_module>
+			<after>download_release_notes</after>
+			<modules config:type="list">
+			    <module>
+                              <name>inst_mf_smt_update</name>
+			    </module>
+			</modules>
+		    </insert_module>
+		</insert_modules>
+	    </workflow>
+	</workflows>
+    </update>
+
+</productDefines>

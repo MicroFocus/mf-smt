@@ -1,0 +1,5 @@
+# the file is placed on an ISO image - where all files have 644
+addFilter("non-executable-script.*/CD1/autorun.sh")
+# if we need arch specific README's, this can't be a noarch package
+addFilter("no-binary")
+

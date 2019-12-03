@@ -1,0 +1,8 @@
+List selected by order of category and then display:
+----------------------------------------------------
+
+name		order	category			icon
+==============================================================
+SMT 		5060	%pattern_primaryfunctions	pattern-generic
+
+('#' marked ones are not visible)

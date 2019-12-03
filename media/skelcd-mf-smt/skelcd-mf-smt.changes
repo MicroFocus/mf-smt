@@ -1,0 +1,25 @@
+-------------------------------------------------------------------
+Tue Oct 29 11:15:01 UTC 2019 - suresh.hosamani@microfocus.com
+
+- B-137188 : Updated the smt_instructions.txt file 
+
+-------------------------------------------------------------------
+Tue Oct 15 05:09:11 UTC 2019 - hsuresh@microfocus.com
+
+- Removed license 
+
+-------------------------------------------------------------------
+Mon Sep 23 12:30:09 UTC 2019 - hsuresh@microfocus.com
+
+- Fixed build issue
+
+-------------------------------------------------------------------
+Mon Sep 23 06:41:15 UTC 2019 - hsuresh@microfocus.com
+
+- Fixed build issue 
+
+-------------------------------------------------------------------
+Fri Sep 20 09:26:37 UTC 2019 - hsuresh@microfocus.com
+
+- Initial submission for 1.0
+

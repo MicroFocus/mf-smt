@@ -1,0 +1,4 @@
+[autorun]
+icon = SuSEgo.ico
+label= Subscription Management Tool for SUSE Linux Enterprise
+shellexecute="README"
