@@ -1,0 +1,37 @@
+Installation Steps for Micro Focus Subscription Management Tool for SUSE Linux Enterprise
+=============================================================================
+
+This is a document how to install the Micro Focus Subscription
+Management Tool for SUSE Linux Enterprise.
+
+
+1) Install the add-on product
+-----------------------------
+Use the 'Add-on Product' YaST module to install the product on the system.
+Make sure 'Micro Focus Subscription Management Tool' pattern is installed. Accept
+the software selection. 
+
+In the next step, launch the 'Micro Focus SMT Configuration Wizard' using 'YaST > Network Services' and then fill in the following information:
+
+* Mirror Credentials for NCC access (Customer Center Access Tab) 
+* NCC email adress (Customer Center Access Tab)
+* check the SMT Server URL (Customer Center Access Tab)
+
+* A Database password (Database and Logging Tab)
+* email addresses for the report module (Database and Logging Tab)
+
+and let the add-on product installation to set up the SMT configuration.
+
+
+3) Set up the catalogs to be mirrored
+-------------------------------------
+Use 'smt catalogs' command to set up the set of catalogs to
+be mirrored to the local disk from NCC. Refer to 'smt catalogs -h'
+for options available. This list should match the products you
+plan to use with SMT.
+
+
+4) Mirror the catalogs
+----------------------
+Type 'smt mirror' on the command line. Use the '-d' option for
+more detailed progress information.
