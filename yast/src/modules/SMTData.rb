@@ -985,6 +985,11 @@ module Yast
       # if it doesn't then check the existence again... and again...
       while true
         # Server certificate is missing
+         if FileUtils.Exists("/etc/ssl/certs/eDirCACert.pem")
+           ret =true
+           break;
+         end
+
         if !FileUtils.Exists(@server_cert)
           break if HandleMissingCACert() 
 

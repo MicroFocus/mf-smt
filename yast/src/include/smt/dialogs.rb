@@ -899,6 +899,15 @@ module Yast
 
       SMTData.WriteCASettings
 
+      if Service.Active("apache2")
+        Service.Restart("apache2")
+          if Service.Active("apache2")
+     	    Builtins.y2milestone("Restarted apache2 service")
+          else
+            Builtins.y2milestone("Restart of apache2 service failed")
+         end
+      end
+
       Progress.NextStage
       Builtins.sleep(@sl)
 

@@ -247,7 +247,7 @@ echo "d /var/run/smt 755 smt www" > /usr/lib/tmpfiles.d/mf-smt.conf
 %config(noreplace) %attr(640, root, www)/etc/smt.conf
 %config /etc/apache2/*.pl
 %config /etc/apache2/conf.d/*.conf
-%config /etc/apache2/vhosts.d/*.conf
+%config (noreplace) /etc/apache2/vhosts.d/vhost-ssl.conf
 %config /etc/smt.d/*.conf
 %config /etc/slp.reg.d/smt.reg
 %exclude /etc/apache2/conf.d/smt_support.conf

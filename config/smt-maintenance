@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh 
 #
 # Copyright (c) 2008-2015 SUSE LLC
 # (c) Copyright [2019] Micro Focus or one of its affiliates.
@@ -29,47 +29,61 @@ function test_cred_permissions {
 function check_copy_cert {
     ok="false"
     calink=""
-    for filename in ${apache_vhosts}; do
 
-        if [ -e ${smt_apache_vhostdir}${filename} ]; then
+    edircert="/etc/ssl/certs/eDirCACert.pem"
+    if [ ! -e ${edircert} ] ; then
+        for filename in ${apache_vhosts}; do
 
-            servercert=`grep -P "^\sSSLCertificateFile" ${smt_apache_vhostdir}${filename} | sed 's/^[[:space:]]*SSLCertificateFile[[:space:]]*//'`
-            calink="${servercert}"
-            issuerhash=""
-            subjecthash=""
+            if [ -e ${smt_apache_vhostdir}${filename} ]; then
 
-            if [ -e ${servercert} ]; then
+                servercert=`grep -P "^\sSSLCertificateFile" ${smt_apache_vhostdir}${filename} | sed 's/^[[:space:]]*SSLCertificateFile[[:space:]]*//'`
+                calink="${servercert}"
+                issuerhash=""
+                subjecthash=""
 
-                issuerhash=`openssl x509 -issuer_hash -noout -in ${servercert}`
-                subjecthash=`openssl x509 -subject_hash -noout -in ${servercert}`
+                if [ -e ${servercert} ]; then
 
-                while [ ${issuerhash} != ${subjecthash} ]; do
-                    suffix=0
-                    calink="/etc/ssl/certs/${issuerhash}.${suffix}"
-                    while [ ! -e "${calink}" ]; do
-                        ((suffix++))
+                    issuerhash=`openssl x509 -issuer_hash -noout -in ${servercert}`
+                    subjecthash=`openssl x509 -subject_hash -noout -in ${servercert}`
+
+                    while [ ${issuerhash} != ${subjecthash} ]; do
+                        suffix=0
                         calink="/etc/ssl/certs/${issuerhash}.${suffix}"
-                        if [ ${suffix} -gt 100 ]; then
-                            logger "ERROR: Setting smt certificate failed"
-                            return 1
-                        fi
-                    done
+                        while [ ! -e "${calink}" ]; do
+                            ((suffix++))
+                            calink="/etc/ssl/certs/${issuerhash}.${suffix}"
+                            if [ ${suffix} -gt 100 ]; then
+                               logger "ERROR: Setting smt certificate failed"
+                               return 1
+                            fi
+                        done
 
-                    issuerhash=`openssl x509 -issuer_hash -noout -in ${calink}`
-                    subjecthash=`openssl x509 -subject_hash -noout -in ${calink}`
+                        issuerhash=`openssl x509 -issuer_hash -noout -in ${calink}`
+                        subjecthash=`openssl x509 -subject_hash -noout -in ${calink}`
 
-                done
+                   done
 
-                if cmp /srv/www/htdocs/smt.crt ${calink} > /dev/null 2>&1 ; then
+                   if cmp /srv/www/htdocs/smt.crt ${calink} > /dev/null 2>&1 ; then
                         ok="true"
-                elif [ -e ${calink} ]; then
-                    logger "Copy SMT certificate"
-                    ok="true"
-                    cp ${calink} /srv/www/htdocs/smt.crt
+                   elif [ -e ${calink} ]; then
+                        logger "Copy SMT certificate"
+                        ok="true"
+                        cp ${calink} /srv/www/htdocs/smt.crt
+                   fi
                 fi
             fi
+        done
+    fi
+
+    if [ -e ${edircert} ]; then
+        if cmp /srv/www/htdocs/smt.crt ${edircert} > /dev/null 2>&1 ; then
+            ok="true"
+        else
+            logger "Copy SMT certificate"
+            ok="true"
+            cp ${edircert} /srv/www/htdocs/smt.crt
         fi
-    done
+    fi
     if [ ${ok} != "true" ]; then
         logger "ERROR: Setting smt certificate failed"
         return 1

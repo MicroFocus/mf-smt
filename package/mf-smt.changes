@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Mon Feb 17 06:11:58 UTC 2020 - root <suresh.hosamani@microfocus.com>
+
+- #1159246 : Repositories not getting time stamped after successful
+  mirror
+- #1163332 : client registration fails with the message "ERROR: Peer
+  certificate cannot be authenticated with known CA certificates: (60)"
+   while registering to SMT Server
+
+-------------------------------------------------------------------
 Mon Nov 11 12:37:33 UTC 2019 - suresh.hosamani@microfocus.com
 
 - B-137188 : added license
