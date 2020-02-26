@@ -378,7 +378,9 @@ sub save
     $sth->bind_param(1, $self->name(), SQL_VARCHAR);
     $sth->bind_param(2, $self->version(), SQL_VARCHAR);
     $sth->bind_param(3, $self->categoryAsInt(), SQL_INTEGER);
-    $sth->bind_param(4, $self->summary(), SQL_VARCHAR);
+    #              Summary in the DB is only a varchar(512)
+    #              So it does not make sense to put more into it.
+    $sth->bind_param(4, substr($self->summary(), 0, 512), SQL_VARCHAR);
     # bnc#723571 - Description in the DB is only a varchar(1024)
     #              So it does not make sense to put more into it.
     $sth->bind_param(5, substr($self->description(), 0, 1024), SQL_VARCHAR);

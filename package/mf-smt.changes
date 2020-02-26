@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Feb 26 04:01:41 UTC 2020 - root <suresh.hosamani@microfocus.com>
+
+- #1159246 : Repositories not getting time stamped after successful
+  mirror
+
+-------------------------------------------------------------------
 Mon Feb 17 06:11:58 UTC 2020 - root <suresh.hosamani@microfocus.com>
 
 - #1159246 : Repositories not getting time stamped after successful
