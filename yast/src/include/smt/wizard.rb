@@ -23,6 +23,10 @@ module Yast
       Yast.include include_target, "smt/helps.rb"
       Yast.include include_target, "smt/dialogs.rb"
 
+      # read firewall settings including service so that firewall can identify apache2 and
+      # apache2-ssl
+      Y2Firewall::Firewalld.instance.read
+
       @widgets = {
         "cr"           => {
           "widget"            => :custom,
@@ -100,10 +104,9 @@ module Yast
         },
         "firewall"     => CWMFirewallInterfaces.CreateOpenFirewallWidget(
           {
-            # renamed in SLES11
             "services"        => [
-              "service:apache2",
-              "service:apache2-ssl"
+              "apache2",
+              "apache2-ssl"
             ],
             "display_details" => false
           }

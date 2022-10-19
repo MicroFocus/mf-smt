@@ -23,7 +23,6 @@ module Yast
       Yast.import "Progress"
       Yast.import "Message"
       Yast.import "PackageSystem"
-      Yast.import "SuSEFirewall"
       Yast.import "FileUtils"
       Yast.import "GPG"
       Yast.import "Hostname"
@@ -545,10 +544,6 @@ module Yast
       Progress.NextStage
       Builtins.sleep(@sl)
 
-      orig = Progress.set(false)
-      SuSEFirewall.Read
-      Progress.set(orig)
-
       Progress.NextStage
       Builtins.sleep(@sl)
 
@@ -924,7 +919,7 @@ module Yast
       Builtins.sleep(@sl)
 
       orig = Progress.set(false)
-      SuSEFirewall.Write
+      Y2Firewall::Firewalld.instance.write
       Progress.set(orig)
 
       Progress.NextStage

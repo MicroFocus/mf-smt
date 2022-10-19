@@ -688,6 +688,18 @@ module Yast
         return false
       end
 
+      cmd = Builtins.sformat(
+        "/bin/chown root:www '%1'",
+        String.Quote(@smt_conf)
+      )
+
+      changePermission = Convert.to_integer(SCR.Execute(path(".target.bash"), cmd))
+      Builtins.y2milestone(
+        "Adjusting file access (%1) returned %2",
+        cmd,
+        changePermission
+      )
+
       Builtins.y2milestone("Running sync: %1", path_to_sync_script)
 
       cmd_out = Convert.to_map(

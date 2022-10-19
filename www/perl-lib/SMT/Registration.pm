@@ -711,7 +711,7 @@ sub insertRegistration
         $hostname = $r->connection()->remote_host();
         if(! defined $hostname || $hostname eq "")
         {
-            $hostname = $r->connection()->remote_ip();
+            $hostname = $r->connection()->client_ip();
         }
     }
 

@@ -35,7 +35,7 @@ Version:        3.0.1
 Release:        0
 Requires(pre):  apache2 apache2-mod_perl pwdutils
 Requires:	htmldoc
-Requires:       createrepo
+Requires:       createrepo_c
 Requires:       gpg2
 Requires:       perl-camgm
 Requires:       logrotate
@@ -45,11 +45,10 @@ Requires:       perl-Config-IniFiles
 Requires:       perl-DBI
 Requires:       perl-Digest-SHA1
 Requires:       perl-JSON 
-Conflicts:	perl-JSON > 2.90
+#Conflicts:	perl-JSON > 2.90
 Requires:       perl-MIME-Lite 
 Conflicts:      perl-MIME-Lite > 3.030
 Requires:       perl-Text-ASCIITable 
-Conflicts:      perl-Text-ASCIITable > 0.20
 Requires:       perl-TimeDate
 Requires:       perl-URI
 Requires:       perl-WWW-Curl
@@ -61,8 +60,8 @@ Requires:       perl-gettext
 Requires:       perl-libwww-perl
 Requires:	perl-solv
 Requires:	perl-DateTime
-Recommends:     mariadb
-Recommends:     perl-DBD-mysql
+Requires:     mariadb
+Requires:     perl-DBD-mysql
 Recommends:     yast2-mf-smt
 Conflicts:      slms-registration
 Conflicts:      mf-smt-client <= 0.0.14
@@ -75,7 +74,10 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Conflicts:	smt 
 Conflicts:	smt-support 
 obsoletes:	smt 
-Obsoletes:	smt-support 
+Obsoletes:	smt-support
+Conflicts:	rmt-server
+Conflicts:	rmt-server-config
+Conflicts:	rmt-server-pubcloud
 
 
 %description
@@ -97,7 +99,7 @@ Authors:
 
 Summary:        Signing Key for RES
 Group:          Productivity/Security
-PreReq:         smt = %version
+PreReq:         mf-smt = %version
 
 %description -n res-signingkeys
 This package contain the signing key for RES.
@@ -165,6 +167,7 @@ rm -f www/perl-lib/SMT/RESTService.pm.$$$$
 %install
 
 /usr/sbin/useradd -r -g www -s /bin/false -c "User for SMT" -d /var/lib/empty smt 2> /dev/null || :
+/usr/sbin/usermod -a -G wwwrun smt 2> /dev/null || :
 
 make DESTDIR=$RPM_BUILD_ROOT DOCDIR=%{_docdir} install
 make DESTDIR=$RPM_BUILD_ROOT install_conf
@@ -193,9 +196,10 @@ ln -s /srv/www/htdocs/repo/tools/clientSetup4SMT.sh $RPM_BUILD_ROOT%{_docdir}/sm
 [ "$RPM_BUILD_ROOT" != "/" ] && [ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT
 
 %pre
-if ! usr/bin/getent passwd smt >/dev/null; then
-  usr/sbin/useradd -r -g www -s /bin/false -c "User for SMT" -d /var/lib/smt smt 2> /dev/null || :
+if ! /usr/bin/getent passwd smt >/dev/null; then
+  /usr/sbin/useradd -r -g www -s /bin/false -c "User for SMT" -d /var/lib/smt smt 2> /dev/null || :
 fi
+/usr/sbin/usermod -a -G wwwrun smt 2> /dev/null || :
 
 %post
 sysconf_addword /etc/sysconfig/apache2 APACHE_MODULES perl
