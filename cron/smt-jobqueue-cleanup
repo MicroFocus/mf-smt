@@ -174,7 +174,6 @@ if ( UNIVERSAL::isa($oldjobs, 'ARRAY') )
         next unless (UNIVERSAL::isa($href, 'HASH') && defined $href->{ID} && defined $href->{GUID_ID});
         $delCount += deleteJobAndChildren($href->{ID}, $href->{GUID_ID}, 1);
     }
-    #SMT::Utils::printLog($LOG, $vblevel, LOG_INFO1,  sprintf("Number of deleted old unprocessed jobs: %s", $delCount , $quiet? 0:1 , 1 ));
     SMT::Utils::printLog($LOG, $vblevel, LOG_INFO1,  sprintf("Number of deleted old unprocessed jobs: %s", $delCount));
 }
 else

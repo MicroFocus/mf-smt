@@ -45,7 +45,6 @@ Requires:       perl-Config-IniFiles
 Requires:       perl-DBI
 Requires:       perl-Digest-SHA1
 Requires:       perl-JSON 
-#Conflicts:	perl-JSON > 2.90
 Requires:       perl-MIME-Lite 
 Conflicts:      perl-MIME-Lite > 3.030
 Requires:       perl-Text-ASCIITable 
