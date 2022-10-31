@@ -1,4 +1,15 @@
 -------------------------------------------------------------------
+Mon Oct 31 05:02:21 UTC 2022 - Gaurav <gaurav.kumar4@microfocus.com>
+
+- OCTCR52A535027 : Remove the execution of yast2 ca-mgm and
+  show popup for missing certificate
+
+-------------------------------------------------------------------
+Wed Oct 19 11:59:36 UTC 2022 - Gaurav <gaurav.kumar4@microfocus.com>
+
+- OCTCR52A535027 : Use firewalld instaed of Susefirewall
+
+-------------------------------------------------------------------
 Mon Feb 17 06:09:09 UTC 2020 - root <suresh.hosamani@microfocus.com>
 
 - #1159246 : Repositories not getting time stamped after successful

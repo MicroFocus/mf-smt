@@ -879,86 +879,6 @@ module Yast
       true
     end
 
-    # Handles a missing CA certificate.
-    # Returns boolean value whether CA checking should be finished.
-    #
-    # @return [Boolean] whether to finish the CA checking
-    def HandleMissingCACert
-      Builtins.y2milestone("CA file %1 doesn't exist", @server_cert)
-      ca_mgm_package = "yast2-ca-management"
-
-      if Popup.AnyQuestion(
-          # TRANSLATORS: Pop-up question headline
-          _("Missing Server Certificate"),
-          # TRANSLATORS: Pop-up question, %1 is replaced with a file name
-          Builtins.sformat(
-            _(
-              "Server certificate %1 does not exist.\n" +
-                "Would you like to run CA management to create one?\n" +
-                "\n" +
-                "The server certificate is vitally important for the NU server to support SSL.\n"
-            ),
-            @server_cert
-          ),
-          _("&Run CA management"),
-          _("&Skip"),
-          @ca_already_called ? :focus_no : :focus_yes
-        )
-        # Package needs to be installed
-        if PackageSystem.CheckAndInstallPackagesInteractive([ca_mgm_package])
-          Builtins.y2milestone("Running ca_mgm")
-          @ca_already_called = true
-
-          Wizard.OpenNextBackDialog
-          progress_orig = Progress.set(false)
-
-          # bnc #400782
-          # Custom control file can make ProductControl not to find anything
-          previous_custom_control_file = ProductControl.custom_control_file
-          if previous_custom_control_file != ""
-            Builtins.y2milestone(
-              "Previous custom_control_file: %1",
-              previous_custom_control_file
-            )
-          end
-
-          # bnc #471162
-          # Use own control file (do not depend on the system one which might be missing)
-          ProductControl.custom_control_file = @smt_control_file
-          ProductControl.Init
-
-          # Call installation proposal (service: CA)
-          ret = WFM.call("inst_proposal", [{ "proposal" => "smt_ca" }])
-
-          Builtins.y2milestone(
-            "Restoring previous custom_control_file: %1",
-            previous_custom_control_file
-          )
-          ProductControl.custom_control_file = previous_custom_control_file
-          ProductControl.Init
-
-          Builtins.y2milestone("Service proposal returned: %1", ret)
-          Progress.set(progress_orig)
-          Wizard.CloseDialog
-
-          return false 
-          # Package is not installed and couldn't be installed
-        else
-          Report.Error(
-            Builtins.sformat(
-              _("Cannot run CA management because package %1 is not installed."),
-              ca_mgm_package
-            )
-          )
-          return true
-        end
-      else
-        Builtins.y2warning("User doesn't want to run CA management.")
-        return true
-      end
-    end
-
-
     # Function migrates SMT between NCC and SCC
     #
     # @return [Boolean] if successful
@@ -1002,8 +922,13 @@ module Yast
            break;
          end
 
-        if !FileUtils.Exists(@server_cert)
-          break if HandleMissingCACert() 
+        missingCertMsg = Builtins.sformat("<p>The SMT Server Certificate is missing.</p>" +
+                         "<p>A certificate must exist before registering the clients with the SMT server.</p>" +
+                         "<p>For information on SMT Server Certificate, see <b>Micro Focus SMT</b> documentation.</p>")
+        if !FileUtils.Exists(@apache_cert)
+          Popup.anyMessageInternalRich("", missingCertMsg, 60, 10)
+          ret = true
+          break
 
           # Server certificate exists
         else
