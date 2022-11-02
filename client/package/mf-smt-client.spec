@@ -122,5 +122,6 @@ exit 0
 %ghost %dir /run/mf-smtclient
 %dir %{_docdir}/mf-smt-client
 %{_docdir}/mf-smt-client/*
+/var/adm/fillup-templates
 
 %changelog

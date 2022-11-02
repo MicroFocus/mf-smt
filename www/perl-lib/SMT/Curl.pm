@@ -55,7 +55,7 @@ sub new
     }
     $self->setopt(CURLOPT_SSL_VERIFYHOST, 2 );
     $self->setopt(CURLOPT_SSL_VERIFYPEER, 1 );
-    $self->setopt(CURLOPT_SSLVERSION, 1 ); # 1 should be CURL_SSLVERSION_TLSv1
+    $self->setopt(CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2 );
 
     if(exists $opt{useragent})
     {

@@ -72,12 +72,10 @@ Obsoletes:      yast2-smt <= 3.0.0
 %if 0%{?sle_version} < 0150000
 Recommends:	yast2-ca-management
 %endif
-BuildRequires:	perl-XML-Writer update-desktop-files yast2 yast2-devtools yast2-testsuite
+BuildRequires:	automake perl-XML-Writer update-desktop-files yast2 yast2-devtools yast2-testsuite
 BuildRequires:	hicolor-icon-theme
 # any YaST theme
 BuildRequires:	yast2-theme-SLE
-# build must not have any choice, using package that provides 'yast2-branding'
-BuildRequires:	yast2-branding-SLE
 
 BuildArchitectures:	noarch
 Obsoletes:	yast2-smt <= 3.0.0

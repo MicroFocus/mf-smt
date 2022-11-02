@@ -1,4 +1,17 @@
 -------------------------------------------------------------------
+Mon Oct 31 05:03:46 UTC 2022 - Gaurav <gaurav.kumar4@microfocus.com>
+
+- OCTCR52A535027 : Seeting the CURLOPT_SSLVERSION to
+  CURL_SSLVERSION_TLSv1_2 in Curl perl module
+
+-------------------------------------------------------------------
+Wed Oct 19 11:58:14 UTC 2022 - Gaurav <gaurav.kumar4@microfocus.com>
+
+- OCTCR52A535027 : YaST SMT registration of OES2023 throws
+  "Can't locate object method "remote_ip" via package
+  "Apache2::Connection" at Registration.pm line 714."
+
+-------------------------------------------------------------------
 Wed Feb 26 04:01:41 UTC 2020 - root <suresh.hosamani@microfocus.com>
 
 - #1159246 : Repositories not getting time stamped after successful
