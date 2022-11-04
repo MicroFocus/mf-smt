@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Nov  4 06:44:00 UTC 2022 - Gaurav <gaurav.kumar4@microfocus.com>
+
+- Version Bump
+
+-------------------------------------------------------------------
 Mon Oct 31 05:02:21 UTC 2022 - Gaurav <gaurav.kumar4@microfocus.com>
 
 - OCTCR52A535027 : Remove the execution of yast2 ca-mgm and

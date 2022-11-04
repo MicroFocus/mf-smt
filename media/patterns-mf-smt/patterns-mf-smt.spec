@@ -21,7 +21,7 @@ BuildRequires:  perl(URI::Escape)
 Summary:        Micro Focus Subscription Management Tool
 License:        GPL-2.0+
 Group:          Metapackages
-Version:        12.1
+Version:        12.2
 Release:        0
 Url:            http://en.opensuse.org/Patterns
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build

@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Nov  4 06:40:38 UTC 2022 - Gaurav <gaurav.kumar4@microfocus.com>
+
+- Version Bump
+
+-------------------------------------------------------------------
 Fri Nov  4 00:51:07 UTC 2022 - Gaurav <gaurav.kumar4@microfocus.com>
 
 - OCTCR52A598010 : DB fix needed in mirroring of channels on MFSMT
