@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Nov  4 00:51:07 UTC 2022 - Gaurav <gaurav.kumar4@microfocus.com>
+
+- OCTCR52A598010 : DB fix needed in mirroring of channels on MFSMT
+
+-------------------------------------------------------------------
 Mon Oct 31 05:03:46 UTC 2022 - Gaurav <gaurav.kumar4@microfocus.com>
 
 - OCTCR52A535027 : Seeting the CURLOPT_SSLVERSION to
