@@ -16,12 +16,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 mf-smt -- Micro Focus Subscription Management Tool
-(c) Copyright [2019] Micro Focus or one of its affiliates.
+(c) Copyright [2019-2022] Micro Focus or one of its affiliates.
 
 Micro Focus Contribution License Agreement ("CLA")
-In order to clarify the intellectual property license granted with 
-contributions from any person or entity, Micro Focus must have a signed 
-Contributor License Agreement on file. This license is for your protection 
-as a contributor, as well as the protection of Micro Focus and its users. 
-For a copy of Micro Focus. Contributor License Agreement, please see here 
-https://github.com/MicroFocus/mf-smt/tree/smt_with-NCC_branch/Open-Source-Contribution-Agreement.pdf
+In order to clarify the intellectual property license granted with
+contributions from any person or entity, Micro Focus must have a signed
+Contributor License Agreement on file. This license is for your protection
+as a contributor, as well as the protection of Micro Focus and its users.
+For a copy of Micro Focus. Contributor License Agreement, please see here
+https://github.com/MicroFocus/mf-smt/blob/SMT2.0/Open-Source-Contribution-Agreement.pdf
