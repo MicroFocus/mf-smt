@@ -1,8 +1,8 @@
-Installation Steps for Micro Focus Subscription Management Tool for SUSE Linux Enterprise
-=============================================================================
+Installation Steps for Micro Focus Subscription Management Tool for SUSE Linux Enterprise Server
+================================================================================================
 
 This is a document how to install the Micro Focus Subscription
-Management Tool for SUSE Linux Enterprise.
+Management Tool for SUSE Linux Enterprise Server.
 
 
 1) Install the add-on product
