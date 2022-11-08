@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Nov  4 06:25:34 UTC 2022 - Gaurav <gaurav.kumar4@microfocus.com>
+
+- Version Bump
+
+-------------------------------------------------------------------
 Wed Oct 16 10:42:00 UTC 2019 - hsuresh@microfocus.com
 
 - Added supportutils-plugin-mf-smt in requires section 

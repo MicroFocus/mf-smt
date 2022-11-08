@@ -31,7 +31,7 @@ Name:           mf-smt
 BuildRequires:  apache2
 BuildRequires:  apache2-mod_perl
 BuildRequires:  swig
-Version:        3.0.1
+Version:        3.1.0
 Release:        0
 Requires(pre):  apache2 apache2-mod_perl pwdutils
 Requires:	htmldoc

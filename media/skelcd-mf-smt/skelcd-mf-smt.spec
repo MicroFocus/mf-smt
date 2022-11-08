@@ -23,20 +23,21 @@ BuildRequires:  recode suse-build-key zip
 License:        GPL-2.0+
 Group:          Metapackages
 AutoReqProv:    off
-Version:        2012.1.27
+Version:        2022.11.4
 Release:        0.<RELEASE5>
 Summary:        CD skeleton for Micro Focus SMT add on product
 Conflicts:      skelcd-SUSE_Linux skelcd skelcd-SUSE_Linux-Addon skelcd-sles 
 Conflicts:      skelcd-openSUSE-CD skelcd-sletc skelcd-ISSLE-Addon
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
-Source:        smt-docu.tar.bz2
+Source:         smt-docu.tar.bz2
+Source1:        micro-focus-smt-2.0-license
 Source6:        autorun.sh
 Source10:       autorun.inf
 Source11:       SuSEgo.ico
 Url:		http://www.microfocus.com
 #Source12:       installation.xml
 Source100:      skelcd-mf-smt-rpmlintrc
-%define         build_distribution_version "SLES 12"
+%define         build_distribution_version "SLES 15"
 
 %description
 This package contains:  
@@ -63,7 +64,7 @@ install docu/*       $RPM_BUILD_ROOT/CD1/docu
 
 cp $RPM_SOURCE_DIR/autorun.inf $RPM_BUILD_ROOT/CD1/ 
 cp $RPM_SOURCE_DIR/SuSEgo.ico $RPM_BUILD_ROOT/CD1/ 
-#cp $RPM_SOURCE_DIR/installation.xml  $RPM_BUILD_ROOT/CD1/ 
+cp $RPM_SOURCE_DIR/micro-focus-smt-2.0-license $RPM_BUILD_ROOT/CD1/
 # installation.xml
 %if ! 0%{?sles_version}
 # be shure, that autorun.inf is in dos format:
