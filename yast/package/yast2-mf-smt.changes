@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Nov 10 07:43:55 UTC 2022 - Gaurav <gaurav.kumar4@microfocus.com>
+
+- Enable firewalld service if not enabled
+
+-------------------------------------------------------------------
 Fri Nov  4 06:44:00 UTC 2022 - Gaurav <gaurav.kumar4@microfocus.com>
 
 - Version Bump

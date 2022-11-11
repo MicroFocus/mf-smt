@@ -80,6 +80,10 @@ module Yast
       @database_already_exists = false
 
       @initial_password = nil
+      if !Service.Enabled("firewalld")
+        Service.Enable("firewalld")
+        Service.Start("firewalld")
+      end
     end
 
     def GetNCCcredentialsFile
