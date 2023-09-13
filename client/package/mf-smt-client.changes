@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Sep 13 09:32:44 UTC 2023 - Gaurav <gaurav.kumar4@microfocus.com>
+
+- OCTCR52A775063 : SMT 2.0, "smt-client" output always shows the
+  Patch Status as Unknown for OES2023 SP0; it works for OES2018 SP3
+
+-------------------------------------------------------------------
 Mon Nov 11 12:40:10 UTC 2019 - suresh.hosamani@microfocus.com
 
 - B-137188 : added license
