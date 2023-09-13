@@ -29,7 +29,7 @@ sub jobhandler
   push (@REFcmdArgs, '--no-cd');
   push (@REFcmdArgs, '--non-interactive');
   push (@REFcmdArgs, 'refresh');
-  push (@REFcmdArgs, '--service');
+  push (@REFcmdArgs, '--services');
 
   (my $REFret, my $REFstdout, my $REFstderr) = SMT::Agent::Utils::executeCommand ( $command, undef, @REFcmdArgs );
 
